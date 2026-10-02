@@ -1,0 +1,10 @@
+# Derleme çıktıları (exe dosyası GitHub Releases üzerinden dağıtılır)
+dist/
+*.exe
+# Derleme sırasında app/ klasöründen kopyalanır
+desktop/app.html
+# Kullanıcı proje dosyaları (örnekler hariç)
+*.fzc
+!ornekler/*.fzc
+.DS_Store
+Thumbs.db

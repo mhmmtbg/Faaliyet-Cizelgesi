@@ -1,0 +1,216 @@
+{
+ "v": 2,
+ "kayit": "2026-10-02T09:00:00Z",
+ "ayar": {
+  "groupBy": "sorumlu",
+  "colorBy": "sorumlu",
+  "clashBy": "sorumlu",
+  "view": "auto",
+  "ppd": 22,
+  "showLinks": true,
+  "tab": "liste"
+ },
+ "faaliyetler": [
+  {
+   "id": "o1",
+   "no": 1,
+   "ad": "Test planı ve prosedür onayı",
+   "baslangic": "2026-10-01",
+   "bitis": "2026-10-03",
+   "sorumlu": "A. Yılmaz",
+   "proje": "Sistem A",
+   "saat": 24,
+   "aciklama": "Test planı rev. B müşteri onayı",
+   "kapali": false,
+   "oncul": []
+  },
+  {
+   "id": "o2",
+   "no": 2,
+   "ad": "Fikstür imalatı",
+   "baslangic": "2026-10-04",
+   "bitis": "2026-10-09",
+   "sorumlu": "Mekanik Tasarım",
+   "proje": "Sistem A",
+   "saat": 60,
+   "aciklama": "Titreşim fikstürü, rezonans taraması dahil",
+   "kapali": false,
+   "oncul": [
+    {
+     "id": "o1",
+     "gecikme": 0
+    }
+   ]
+  },
+  {
+   "id": "o3",
+   "no": 3,
+   "ad": "Titreşim testi – X ekseni",
+   "baslangic": "2026-10-12",
+   "bitis": "2026-10-14",
+   "sorumlu": "A. Yılmaz",
+   "proje": "Sistem A",
+   "saat": 32,
+   "aciklama": "MIL-STD-810H Method 514.8",
+   "kapali": false,
+   "oncul": [
+    {
+     "id": "o2",
+     "gecikme": 0
+    }
+   ]
+  },
+  {
+   "id": "o4",
+   "no": 4,
+   "ad": "Titreşim testi – Y/Z ekseni",
+   "baslangic": "2026-10-15",
+   "bitis": "2026-10-19",
+   "sorumlu": "A. Yılmaz",
+   "proje": "Sistem A",
+   "saat": 40,
+   "aciklama": "Aynı fikstürle devam",
+   "kapali": false,
+   "oncul": [
+    {
+     "id": "o3",
+     "gecikme": 0
+    }
+   ]
+  },
+  {
+   "id": "o5",
+   "no": 5,
+   "ad": "Pirotektik şok testi",
+   "baslangic": "2026-10-20",
+   "bitis": "2026-10-21",
+   "sorumlu": "M. Demir",
+   "proje": "Sistem A",
+   "saat": 16,
+   "aciklama": "SRS seviyesi: 2000 g",
+   "kapali": false,
+   "oncul": [
+    {
+     "id": "o4",
+     "gecikme": 0
+    }
+   ]
+  },
+  {
+   "id": "o6",
+   "no": 6,
+   "ad": "Akustik test",
+   "baslangic": "2026-10-16",
+   "bitis": "2026-10-19",
+   "sorumlu": "A. Yılmaz",
+   "proje": "Sistem B",
+   "saat": 24,
+   "aciklama": "Difüz alan, 145 dB OASPL",
+   "kapali": false,
+   "oncul": []
+  },
+  {
+   "id": "o7",
+   "no": 7,
+   "ad": "Termal çevrim",
+   "baslangic": "2026-10-22",
+   "bitis": "2026-11-02",
+   "sorumlu": "S. Kaya",
+   "proje": "Sistem A",
+   "saat": 80,
+   "aciklama": "20 çevrim, −40 / +71 °C",
+   "kapali": false,
+   "oncul": [
+    {
+     "id": "o5",
+     "gecikme": 1
+    }
+   ]
+  },
+  {
+   "id": "o8",
+   "no": 8,
+   "ad": "Fonksiyonel test",
+   "baslangic": "2026-11-03",
+   "bitis": "2026-11-04",
+   "sorumlu": "Sistem Mühendisliği",
+   "proje": "Sistem A",
+   "saat": 24,
+   "aciklama": "Test sonrası performans doğrulaması",
+   "kapali": false,
+   "oncul": [
+    {
+     "id": "o7",
+     "gecikme": 0
+    }
+   ]
+  },
+  {
+   "id": "o9",
+   "no": 9,
+   "ad": "Akustik test raporu",
+   "baslangic": "2026-10-20",
+   "bitis": "2026-10-23",
+   "sorumlu": "A. Yılmaz",
+   "proje": "Sistem B",
+   "saat": 16,
+   "aciklama": "",
+   "kapali": false,
+   "oncul": [
+    {
+     "id": "o6",
+     "gecikme": 0
+    }
+   ]
+  },
+  {
+   "id": "o10",
+   "no": 10,
+   "ad": "Ön tasarım gözden geçirme",
+   "baslangic": "2026-10-02",
+   "bitis": "2026-10-02",
+   "sorumlu": "Sistem Mühendisliği",
+   "proje": "Sistem B",
+   "saat": 8,
+   "aciklama": "",
+   "kapali": true,
+   "oncul": []
+  },
+  {
+   "id": "o11",
+   "no": 11,
+   "ad": "Test sonuç raporu",
+   "baslangic": "2026-11-05",
+   "bitis": "2026-11-09",
+   "sorumlu": "Sistem Mühendisliği",
+   "proje": "Sistem A",
+   "saat": 40,
+   "aciklama": "",
+   "kapali": false,
+   "oncul": [
+    {
+     "id": "o8",
+     "gecikme": 0
+    }
+   ]
+  },
+  {
+   "id": "o12",
+   "no": 12,
+   "ad": "Konfigürasyon kontrolü",
+   "baslangic": "2026-10-13",
+   "bitis": "2026-10-13",
+   "sorumlu": "Kalite",
+   "proje": "Sistem A",
+   "saat": 8,
+   "aciklama": "",
+   "kapali": false,
+   "oncul": [
+    {
+     "id": "o2",
+     "gecikme": 0
+    }
+   ]
+  }
+ ]
+}
