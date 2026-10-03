@@ -86,7 +86,9 @@
   window.confirm = function(m){ return mesajKutusu("confirm", m); };
 
   /* kısayollar; sayfa yenileme ve tarayıcı sağ tık menüsü kapalı (kaydedilmemiş iş kaybolmasın) */
-  var KISA = { n:"yeni", o:"ac", s:"kaydet", e:"excelKaydet", i:"excelAktar", "1":"sekme:liste", "2":"sekme:efor", "3":"sekme:akis" };
+  /* Ctrl+Z / Ctrl+Y sayfanın kendisinde işlenir (yazı alanında metin geri alma bozulmasın) */
+  var KISA = { n:"yeni", o:"ac", s:"kaydet", e:"excelKaydet", i:"excelAktar", p:"yazdir",
+               "1":"sekme:cizelge", "2":"sekme:liste", "3":"sekme:akis", "4":"sekme:yuk", "5":"sekme:rapor" };
   window.addEventListener("keydown", function(e){
     var k = (e.key || "").toLowerCase();
     if (k === "f5" || ((e.ctrlKey || e.metaKey) && k === "r")) { e.preventDefault(); return; }

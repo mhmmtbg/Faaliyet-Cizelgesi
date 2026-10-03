@@ -1,26 +1,23 @@
 # Faaliyet Zaman Çizelgesi
 
 Kurulum gerektirmeyen, internetsiz çalışan bir **faaliyet planlama ve takip aracı**.
-Faaliyetleri tarihe göre bir zaman çizelgesine dizer, sorumlu ve projeye göre renklendirir, çakışmaları ve öncül–ardıl bağımlılıklarını gösterir.
+Faaliyetleri iş günü takvimine göre bir zaman çizelgesine dizer; öncül–ardıl bağlarını, kritik yolu, çakışmaları, kişi ve kaynak yükünü gösterir, haftalık durum raporu üretir.
 Kapalı ağdaki, yönetici yetkisi olmayan bilgisayarlarda çalışmak üzere tasarlandı.
 
 ![Genel görünüm](docs/images/ekran-genel.png)
 
 ## Öne çıkanlar
 
-- **Zaman çizelgesi:** Satırlar sorumluya veya projeye göre gruplanır, çubuklar sorumlu veya projeye göre renklenir. Hafta sonları gölgeli, bugün çizgisi işaretli.
-- **Görünüm:** Tüm faaliyetler, çeyrek (3 ay) veya istenen tarih aralığı. **Sığdır** ile aralık ekrana oturur.
-- **Çakışmalar:** Aynı sorumlu, aynı proje ya da ikisinden birine göre kesişen işler kırmızı taramayla işaretlenir. Ayrıntı penceresinde kiminle, hangi tarihlerde ve kaç gün çakıştığı görünür.
-- **Öncül / ardıl bağımlılıkları:**
-  - Bir çubuğu ya da akış şemasındaki bir kutuyu tutup başka birinin üzerine bırakmak bağ kurar.
-  - Gecikme günü tanımlanabilir (ör. `+2`); döngü oluşturan bağlar reddedilir.
-  - Bir işin tarihi değişince zincirdeki ardılların yeni tarihleri hesaplanır ve onayla uygulanır.
-  - Oklar kutuların etrafından dolaşan dik açılı yollarla çizilir.
-- **Akış şeması:** Proje bazlı. Aynı anda yürüyen işler aynı aşamada yan yana durur. Gri oklar aşama sırasını, yeşil oklar bağları gösterir.
-- **Adam*saat:** Kişi bazında toplamlar, adam*gün karşılığı ve projelere dağılım.
-- **Excel:** Sütun eşleştirmeli içe aktarma (başlık satırı ve tarih biçimi otomatik bulunur); faaliyetler, adam*saat ve çakışma sayfalarıyla dışa aktarma; boş şablon.
-- **Görsel çıktı:** Çizelge ve akış şeması PNG olarak (yüksek çözünürlük, başlık ve açıklamalarla).
-- **Kapatma:** Biten işler kapatılınca çizelgeden ve çakışma hesabından düşer, kayıt silinmez.
+- **Ekrana sığan düzen:** Çizelge, Liste, Akış şeması, Yük ve Rapor ayrı sekmelerde. Faaliyet formu sağdan açılan bir çekmecede.
+- **Zaman çizelgesi:** Satırlar sorumluya, projeye, kaynağa ya da iş kırılımına (gruplar) göre. Çubuğu sürükleyerek taşıma, sağ kenarından süre değiştirme, ○ tutamaktan bağ kurma.
+- **Çalışma takvimi:** Hafta sonları ve Türkiye resmi tatilleri atlanır; özel tatil ve kapalı günler eklenebilir. Kesintisiz işler için "takvim günü" seçeneği.
+- **Öncül / ardıl bağları:** Gecikmeli bağ, döngü engeli, zincirleme tarih güncelleme (ileri itme / öne çekme), ihlal işaretleme. Oklar kutuların etrafından dolaşır.
+- **Kritik yol ve bolluk**, **kilometre taşları**, **gruplar (iş kırılımı)**, **ilerleme yüzdesi**, gerçekleşen tarihler, **temel plan ve sapma**.
+- **Kaynak / tesis** alanı ile test tezgâhı, oda, cihaz gibi paylaşılan kaynakların çakışma kontrolü.
+- **Yük:** Kişi başı haftalık saat yükü (kapasite aşımı renkli) ve kaynak doluluğu; kişi × proje adam*saat özeti.
+- **Rapor:** Seçilen dönem için gecikenler, başlayacak ve bitecek işler, kilometre taşları, kritik yol, çakışmalar; yazdırılabilir / PDF.
+- **Geri al / yinele** (`Ctrl+Z` / `Ctrl+Y`), **toplu düzenleme**, **etiketler** ve **özel alanlar**.
+- **Excel:** Sütun eşleştirmeli içe aktarma; tüm alanlarla dışa aktarma; boş şablon. Çizelge ve akış şeması **PNG** olarak.
 
 ## İndirme ve çalıştırma
 
@@ -36,27 +33,32 @@ Kapalı ağdaki, yönetici yetkisi olmayan bilgisayarlarda çalışmak üzere ta
 
 ## Hızlı başlangıç
 
-1. Uygulamayı açın. Örnek bir proje görmek için [`ornekler/ornek-test-kampanyasi.fzc`](ornekler/ornek-test-kampanyasi.fzc) dosyasını **Dosya → Aç** ile açın.
-2. Soldaki formdan faaliyet ekleyin ya da **Excel'den aktar** ile toplu yükleyin.
-3. Bağ kurmak için çizelgede bir çubuğu tutup ardılı olacak çubuğun üzerine bırakın.
-4. Bir çubuğa tıklayınca ayrıntı penceresi açılır: tarihler, bağımlılıklar ve çakışmalar.
-5. **Kaydet** (`Ctrl+S`) ile projeyi `.fzc` dosyası olarak saklayın.
+1. Uygulamayı açın. Örnek bir proje için [`ornekler/ornek-test-kampanyasi.fzc`](ornekler/ornek-test-kampanyasi.fzc) dosyasını **Dosya → Aç** ile açın.
+2. **+ Yeni faaliyet** (`Insert`) ile faaliyet, kilometre taşı ya da grup ekleyin veya **Dosya → Excel'den aktar** ile toplu yükleyin.
+3. Çizelgede çubuğu sürükleyerek taşıyın; sağdaki ○ tutamağı başka bir çubuğa bırakarak bağ kurun.
+4. **⚙ Proje ayarları**'ndan çalışma günlerini, özel tatilleri ve özel alanları belirleyin.
+5. **Dosya → Temel planı kaydet** ile planı dondurun; sonraki kaymalar sapma olarak görünür.
+6. **Kaydet** (`Ctrl+S`) ile projeyi `.fzc` dosyası olarak saklayın.
 
 Ayrıntılı kullanım için: **[docs/KULLANIM.md](docs/KULLANIM.md)**
 
 ## Ekran görüntüleri
 
-| Sürükleyerek bağ kurma | Faaliyet ayrıntısı |
+| Çubuğu sürükleyerek taşıma | Zincirleme tarih güncelleme |
 |---|---|
-| ![Sürükle-bağla](docs/images/ekran-surukle.png) | ![Ayrıntı](docs/images/ekran-detay.png) |
+| ![Sürükle](docs/images/ekran-surukle.png) | ![Zincir](docs/images/ekran-zincir.png) |
 
-| Akış şeması | Zincirleme tarih güncelleme |
+| Liste ve toplu düzenleme | Faaliyet ayrıntısı |
 |---|---|
-| ![Akış şeması](docs/images/ekran-akis.png) | ![Zincir](docs/images/ekran-zincir.png) |
+| ![Liste](docs/images/ekran-liste.png) | ![Ayrıntı](docs/images/ekran-detay.png) |
 
-| Adam*saat özeti |
-|---|
-| ![Adam*saat](docs/images/ekran-efor.png) |
+| Yük ve adam*saat | Durum raporu |
+|---|---|
+| ![Yük](docs/images/ekran-yuk.png) | ![Rapor](docs/images/ekran-rapor.png) |
+
+| Akış şeması | Proje ayarları |
+|---|---|
+| ![Akış şeması](docs/images/ekran-akis.png) | ![Ayarlar](docs/images/ekran-ayar.png) |
 
 ## Depo yapısı
 
@@ -68,7 +70,7 @@ docs/                         Kullanım ve geliştirme belgeleri, ekran görünt
 assets/icon.png               Uygulama ikonu
 ```
 
-Derleme ve mimari için: **[docs/GELISTIRME.md](docs/GELISTIRME.md)**
+Derleme ve mimari için: **[docs/GELISTIRME.md](docs/GELISTIRME.md)** · Sürüm notları: **[CHANGELOG.md](CHANGELOG.md)**
 
 ## Lisans ve üçüncü taraf bileşenler
 

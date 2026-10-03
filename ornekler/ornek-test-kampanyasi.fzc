@@ -1,161 +1,469 @@
 {
- "v": 2,
- "kayit": "2026-10-02T09:00:00Z",
+ "v": 3,
+ "kayit": "2026-10-03T09:00:00Z",
  "ayar": {
-  "groupBy": "sorumlu",
+  "groupBy": "wbs",
   "colorBy": "sorumlu",
-  "clashBy": "sorumlu",
+  "clashBy": "sk",
   "view": "auto",
-  "ppd": 22,
+  "ppd": 24,
+  "showClosed": false,
+  "tab": "cizelge",
   "showLinks": true,
-  "tab": "liste"
+  "showKritik": true,
+  "showTemel": true
+ },
+ "proje": {
+  "haftaSonu": [
+   0,
+   6
+  ],
+  "trTatil": true,
+  "tatiller": [
+   {
+    "tarih": "2026-10-30",
+    "ad": "Köprü günü (idari izin)"
+   }
+  ],
+  "kapasite": 40,
+  "alanlar": [
+   {
+    "ad": "Standart",
+    "tur": "metin",
+    "secenekler": []
+   },
+   {
+    "ad": "Seri no",
+    "tur": "metin",
+    "secenekler": []
+   }
+  ],
+  "temel": {
+   "kayit": "2026-09-25T10:00:00Z",
+   "plan": {
+    "o1": {
+     "bas": "2026-09-28",
+     "bit": "2026-10-02"
+    },
+    "o2": {
+     "bas": "2026-10-05",
+     "bit": "2026-10-09"
+    },
+    "m1": {
+     "bas": "2026-10-09",
+     "bit": "2026-10-09"
+    },
+    "o3": {
+     "bas": "2026-10-12",
+     "bit": "2026-10-14"
+    },
+    "o4": {
+     "bas": "2026-10-15",
+     "bit": "2026-10-19"
+    },
+    "o12": {
+     "bas": "2026-10-12",
+     "bit": "2026-10-12"
+    },
+    "o5": {
+     "bas": "2026-10-18",
+     "bit": "2026-10-19"
+    },
+    "o7": {
+     "bas": "2026-10-21",
+     "bit": "2026-10-30"
+    },
+    "o8": {
+     "bas": "2026-10-31",
+     "bit": "2026-11-01"
+    },
+    "o11": {
+     "bas": "2026-11-02",
+     "bit": "2026-11-04"
+    },
+    "m2": {
+     "bas": "2026-11-04",
+     "bit": "2026-11-04"
+    },
+    "o6": {
+     "bas": "2026-10-15",
+     "bit": "2026-10-16"
+    },
+    "o9": {
+     "bas": "2026-10-18",
+     "bit": "2026-10-21"
+    },
+    "o10": {
+     "bas": "2026-09-21",
+     "bit": "2026-09-23"
+    }
+   }
+  }
  },
  "faaliyetler": [
   {
-   "id": "o1",
+   "id": "g1",
    "no": 1,
-   "ad": "Test planı ve prosedür onayı",
-   "baslangic": "2026-10-01",
-   "bitis": "2026-10-03",
-   "sorumlu": "A. Yılmaz",
+   "tur": "grup",
+   "ad": "Hazırlık",
+   "baslangic": "2026-09-28",
+   "bitis": "2026-10-09",
+   "takvim": "is",
+   "sorumlu": "",
    "proje": "Sistem A",
-   "saat": 24,
-   "aciklama": "Test planı rev. B müşteri onayı",
+   "kaynak": "",
+   "saat": 0,
+   "aciklama": "",
    "kapali": false,
+   "yuzde": 0,
    "oncul": []
   },
   {
-   "id": "o2",
+   "id": "o1",
    "no": 2,
+   "tur": "is",
+   "ad": "Test planı ve prosedür onayı",
+   "baslangic": "2026-09-28",
+   "bitis": "2026-10-02",
+   "takvim": "is",
+   "sorumlu": "A. Yılmaz",
+   "proje": "Sistem A",
+   "kaynak": "",
+   "saat": 24,
+   "aciklama": "Test planı rev. B müşteri onayı",
+   "kapali": false,
+   "yuzde": 100,
+   "oncul": [],
+   "ust": "g1",
+   "gercekBaslangic": "2026-09-28",
+   "gercekBitis": "2026-10-02"
+  },
+  {
+   "id": "o2",
+   "no": 3,
+   "tur": "is",
    "ad": "Fikstür imalatı",
-   "baslangic": "2026-10-04",
+   "baslangic": "2026-10-05",
    "bitis": "2026-10-09",
+   "takvim": "is",
    "sorumlu": "Mekanik Tasarım",
    "proje": "Sistem A",
+   "kaynak": "Atölye",
    "saat": 60,
    "aciklama": "Titreşim fikstürü, rezonans taraması dahil",
    "kapali": false,
+   "yuzde": 0,
    "oncul": [
     {
      "id": "o1",
      "gecikme": 0
     }
-   ]
+   ],
+   "ust": "g1"
   },
   {
-   "id": "o3",
-   "no": 3,
-   "ad": "Titreşim testi – X ekseni",
-   "baslangic": "2026-10-12",
-   "bitis": "2026-10-14",
-   "sorumlu": "A. Yılmaz",
+   "id": "m1",
+   "no": 4,
+   "tur": "kilometre",
+   "ad": "Test hazırlık gözden geçirmesi (TRR)",
+   "baslangic": "2026-10-09",
+   "bitis": "2026-10-09",
+   "takvim": "is",
+   "sorumlu": "Sistem Mühendisliği",
    "proje": "Sistem A",
-   "saat": 32,
-   "aciklama": "MIL-STD-810H Method 514.8",
+   "kaynak": "",
+   "saat": 0,
+   "aciklama": "",
    "kapali": false,
+   "yuzde": 0,
    "oncul": [
     {
      "id": "o2",
      "gecikme": 0
     }
-   ]
+   ],
+   "ust": "g1"
+  },
+  {
+   "id": "g2",
+   "no": 5,
+   "tur": "grup",
+   "ad": "Titreşim testleri",
+   "baslangic": "2026-10-12",
+   "bitis": "2026-10-19",
+   "takvim": "is",
+   "sorumlu": "",
+   "proje": "Sistem A",
+   "kaynak": "",
+   "saat": 0,
+   "aciklama": "",
+   "kapali": false,
+   "yuzde": 0,
+   "oncul": []
+  },
+  {
+   "id": "o3",
+   "no": 6,
+   "tur": "is",
+   "ad": "Titreşim testi – X ekseni",
+   "baslangic": "2026-10-12",
+   "bitis": "2026-10-14",
+   "takvim": "is",
+   "sorumlu": "A. Yılmaz",
+   "proje": "Sistem A",
+   "kaynak": "Titreşim tablası",
+   "saat": 32,
+   "aciklama": "Rastgele titreşim, 3 eksen sırasıyla",
+   "kapali": false,
+   "yuzde": 0,
+   "oncul": [
+    {
+     "id": "m1",
+     "gecikme": 0
+    }
+   ],
+   "ust": "g2",
+   "etiketler": [
+    "titreşim"
+   ],
+   "ozel": {
+    "Standart": "MIL-STD-810H Method 514.8",
+    "Seri no": "SN-0042"
+   }
   },
   {
    "id": "o4",
-   "no": 4,
+   "no": 7,
+   "tur": "is",
    "ad": "Titreşim testi – Y/Z ekseni",
    "baslangic": "2026-10-15",
    "bitis": "2026-10-19",
+   "takvim": "is",
    "sorumlu": "A. Yılmaz",
    "proje": "Sistem A",
+   "kaynak": "Titreşim tablası",
    "saat": 40,
    "aciklama": "Aynı fikstürle devam",
    "kapali": false,
+   "yuzde": 0,
    "oncul": [
     {
      "id": "o3",
      "gecikme": 0
     }
-   ]
+   ],
+   "ust": "g2",
+   "etiketler": [
+    "titreşim"
+   ],
+   "ozel": {
+    "Standart": "MIL-STD-810H Method 514.8",
+    "Seri no": "SN-0042"
+   }
+  },
+  {
+   "id": "o12",
+   "no": 8,
+   "tur": "is",
+   "ad": "Konfigürasyon kontrolü",
+   "baslangic": "2026-10-12",
+   "bitis": "2026-10-12",
+   "takvim": "is",
+   "sorumlu": "Kalite",
+   "proje": "Sistem A",
+   "kaynak": "",
+   "saat": 8,
+   "aciklama": "",
+   "kapali": false,
+   "yuzde": 0,
+   "oncul": [
+    {
+     "id": "m1",
+     "gecikme": 0
+    }
+   ],
+   "ust": "g2"
+  },
+  {
+   "id": "g3",
+   "no": 9,
+   "tur": "grup",
+   "ad": "Şok ve termal testler",
+   "baslangic": "2026-10-20",
+   "bitis": "2026-11-03",
+   "takvim": "is",
+   "sorumlu": "",
+   "proje": "Sistem A",
+   "kaynak": "",
+   "saat": 0,
+   "aciklama": "",
+   "kapali": false,
+   "yuzde": 0,
+   "oncul": []
   },
   {
    "id": "o5",
-   "no": 5,
+   "no": 10,
+   "tur": "is",
    "ad": "Pirotektik şok testi",
    "baslangic": "2026-10-20",
    "bitis": "2026-10-21",
+   "takvim": "is",
    "sorumlu": "M. Demir",
    "proje": "Sistem A",
+   "kaynak": "Şok düzeneği",
    "saat": 16,
    "aciklama": "SRS seviyesi: 2000 g",
    "kapali": false,
+   "yuzde": 0,
    "oncul": [
     {
      "id": "o4",
+     "gecikme": 0
+    }
+   ],
+   "ust": "g3",
+   "etiketler": [
+    "şok"
+   ],
+   "ozel": {
+    "Standart": "MIL-STD-810H Method 517.3"
+   }
+  },
+  {
+   "id": "o7",
+   "no": 11,
+   "tur": "is",
+   "ad": "Termal çevrim",
+   "baslangic": "2026-10-23",
+   "bitis": "2026-11-01",
+   "takvim": "takvim",
+   "sorumlu": "S. Kaya",
+   "proje": "Sistem A",
+   "kaynak": "İklimlendirme kabini",
+   "saat": 80,
+   "aciklama": "20 çevrim, −40 / +71 °C, kesintisiz (takvim günü)",
+   "kapali": false,
+   "yuzde": 0,
+   "oncul": [
+    {
+     "id": "o5",
+     "gecikme": 1
+    }
+   ],
+   "ust": "g3",
+   "etiketler": [
+    "termal"
+   ],
+   "ozel": {
+    "Standart": "MIL-STD-810H Method 503.7"
+   }
+  },
+  {
+   "id": "o8",
+   "no": 12,
+   "tur": "is",
+   "ad": "Fonksiyonel test",
+   "baslangic": "2026-11-02",
+   "bitis": "2026-11-03",
+   "takvim": "is",
+   "sorumlu": "Sistem Mühendisliği",
+   "proje": "Sistem A",
+   "kaynak": "",
+   "saat": 24,
+   "aciklama": "Test sonrası performans doğrulaması",
+   "kapali": false,
+   "yuzde": 0,
+   "oncul": [
+    {
+     "id": "o7",
+     "gecikme": 0
+    }
+   ],
+   "ust": "g3"
+  },
+  {
+   "id": "o11",
+   "no": 13,
+   "tur": "is",
+   "ad": "Test sonuç raporu",
+   "baslangic": "2026-11-04",
+   "bitis": "2026-11-06",
+   "takvim": "is",
+   "sorumlu": "Sistem Mühendisliği",
+   "proje": "Sistem A",
+   "kaynak": "",
+   "saat": 40,
+   "aciklama": "",
+   "kapali": false,
+   "yuzde": 0,
+   "oncul": [
+    {
+     "id": "o8",
+     "gecikme": 0
+    }
+   ]
+  },
+  {
+   "id": "m2",
+   "no": 14,
+   "tur": "kilometre",
+   "ad": "Test kampanyası tamamlandı",
+   "baslangic": "2026-11-06",
+   "bitis": "2026-11-06",
+   "takvim": "is",
+   "sorumlu": "Sistem Mühendisliği",
+   "proje": "Sistem A",
+   "kaynak": "",
+   "saat": 0,
+   "aciklama": "",
+   "kapali": false,
+   "yuzde": 0,
+   "oncul": [
+    {
+     "id": "o11",
      "gecikme": 0
     }
    ]
   },
   {
    "id": "o6",
-   "no": 6,
+   "no": 15,
+   "tur": "is",
    "ad": "Akustik test",
-   "baslangic": "2026-10-16",
-   "bitis": "2026-10-19",
+   "baslangic": "2026-10-15",
+   "bitis": "2026-10-16",
+   "takvim": "is",
    "sorumlu": "A. Yılmaz",
    "proje": "Sistem B",
+   "kaynak": "Yankı odası",
    "saat": 24,
    "aciklama": "Difüz alan, 145 dB OASPL",
    "kapali": false,
-   "oncul": []
-  },
-  {
-   "id": "o7",
-   "no": 7,
-   "ad": "Termal çevrim",
-   "baslangic": "2026-10-22",
-   "bitis": "2026-11-02",
-   "sorumlu": "S. Kaya",
-   "proje": "Sistem A",
-   "saat": 80,
-   "aciklama": "20 çevrim, −40 / +71 °C",
-   "kapali": false,
-   "oncul": [
-    {
-     "id": "o5",
-     "gecikme": 1
-    }
-   ]
-  },
-  {
-   "id": "o8",
-   "no": 8,
-   "ad": "Fonksiyonel test",
-   "baslangic": "2026-11-03",
-   "bitis": "2026-11-04",
-   "sorumlu": "Sistem Mühendisliği",
-   "proje": "Sistem A",
-   "saat": 24,
-   "aciklama": "Test sonrası performans doğrulaması",
-   "kapali": false,
-   "oncul": [
-    {
-     "id": "o7",
-     "gecikme": 0
-    }
-   ]
+   "yuzde": 0,
+   "oncul": [],
+   "etiketler": [
+    "akustik"
+   ],
+   "ozel": {
+    "Standart": "MIL-STD-810H Method 515.8"
+   }
   },
   {
    "id": "o9",
-   "no": 9,
+   "no": 16,
+   "tur": "is",
    "ad": "Akustik test raporu",
-   "baslangic": "2026-10-20",
-   "bitis": "2026-10-23",
+   "baslangic": "2026-10-19",
+   "bitis": "2026-10-22",
+   "takvim": "is",
    "sorumlu": "A. Yılmaz",
    "proje": "Sistem B",
+   "kaynak": "",
    "saat": 16,
    "aciklama": "",
    "kapali": false,
+   "yuzde": 0,
    "oncul": [
     {
      "id": "o6",
@@ -165,52 +473,20 @@
   },
   {
    "id": "o10",
-   "no": 10,
-   "ad": "Ön tasarım gözden geçirme",
-   "baslangic": "2026-10-02",
-   "bitis": "2026-10-02",
-   "sorumlu": "Sistem Mühendisliği",
-   "proje": "Sistem B",
+   "no": 17,
+   "tur": "is",
+   "ad": "Eski fikstür kalibrasyonu",
+   "baslangic": "2026-09-21",
+   "bitis": "2026-09-23",
+   "takvim": "is",
+   "sorumlu": "M. Demir",
+   "proje": "Sistem A",
+   "kaynak": "Atölye",
    "saat": 8,
    "aciklama": "",
    "kapali": true,
+   "yuzde": 100,
    "oncul": []
-  },
-  {
-   "id": "o11",
-   "no": 11,
-   "ad": "Test sonuç raporu",
-   "baslangic": "2026-11-05",
-   "bitis": "2026-11-09",
-   "sorumlu": "Sistem Mühendisliği",
-   "proje": "Sistem A",
-   "saat": 40,
-   "aciklama": "",
-   "kapali": false,
-   "oncul": [
-    {
-     "id": "o8",
-     "gecikme": 0
-    }
-   ]
-  },
-  {
-   "id": "o12",
-   "no": 12,
-   "ad": "Konfigürasyon kontrolü",
-   "baslangic": "2026-10-13",
-   "bitis": "2026-10-13",
-   "sorumlu": "Kalite",
-   "proje": "Sistem A",
-   "saat": 8,
-   "aciklama": "",
-   "kapali": false,
-   "oncul": [
-    {
-     "id": "o2",
-     "gecikme": 0
-    }
-   ]
   }
  ]
 }

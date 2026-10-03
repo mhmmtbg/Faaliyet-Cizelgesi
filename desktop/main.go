@@ -332,12 +332,22 @@ func menuKur() {
 	menuEkle(d, 109, "Çı&kış\tAlt+F4", "__cikis")
 
 	dz := altMenu(bar, "Dü&zen")
+	menuEkle(dz, 202, "&Geri al\tCtrl+Z", "geriAl")
+	menuEkle(dz, 203, "&Yinele\tCtrl+Y", "yinele")
+	ayrac(dz)
+	menuEkle(dz, 204, "Yeni &faaliyet…\tInsert", "yeniFaaliyet")
+	ayrac(dz)
 	menuEkle(dz, 201, "Bağımlılık ihlallerini &hizala", "hizala")
+	menuEkle(dz, 205, "&Temel planı kaydet", "temel")
+	ayrac(dz)
+	menuEkle(dz, 206, "&Proje ayarları (takvim, tatiller, özel alanlar)…", "ayarlar")
 
 	g := altMenu(bar, "&Görünüm")
-	menuEkle(g, 301, "&Faaliyet listesi\tCtrl+1", "sekme:liste")
-	menuEkle(g, 302, "&Adam*saat\tCtrl+2", "sekme:efor")
+	menuEkle(g, 301, "&Çizelge\tCtrl+1", "sekme:cizelge")
+	menuEkle(g, 302, "&Liste\tCtrl+2", "sekme:liste")
 	menuEkle(g, 303, "Akış ş&eması\tCtrl+3", "sekme:akis")
+	menuEkle(g, 304, "&Yük ve adam*saat\tCtrl+4", "sekme:yuk")
+	menuEkle(g, 305, "&Rapor\tCtrl+5", "sekme:rapor")
 
 	y := altMenu(bar, "&Yardım")
 	menuEkle(y, 401, "&Veri klasörünü aç", "__veriKlasoru")
@@ -378,7 +388,7 @@ func yeniProc(hwnd, msg, wp, lp uintptr) uintptr {
 				case "__veriKlasoru":
 					exec.Command("explorer", appDir()).Start()
 				case "__hakkinda":
-					msgBox(hwnd, uygAdi+"\nSürüm 1.1\n\nKurulum ve yönetici yetkisi gerektirmez, internet kullanmaz.\n"+
+					msgBox(hwnd, uygAdi+"\nSürüm 1.2\n\nKurulum ve yönetici yetkisi gerektirmez, internet kullanmaz.\n"+
 						"Projeler .fzc dosyalarına kaydedilir.\n\nAyarlar ve kurtarma kaydı:\n"+appDir(), "Hakkında", mbIconInfo)
 				default:
 					jsKomut(k)
