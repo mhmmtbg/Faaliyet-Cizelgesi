@@ -1,5 +1,10 @@
 # Değişiklik Günlüğü
 
+## v1.3.1 — 2026-10-08
+
+- "Kapatılanlar" işaretliyken kapatılmış faaliyetler çizelgede, akış şemasında ve PNG çıktısında da görünür. Soluk gri, kesikli kenarlı ve ✓ işaretli çizilirler. Bunlara bağlanan oklar da soluk gösterilir.
+- Kapatılmış çubuklar taşınamaz ve bağ tutamağı göstermez; tıklayınca ayrıntı açılır.
+
 ## v1.3.0 — 2026-10-08
 
 - **Haftalık görünüm:**

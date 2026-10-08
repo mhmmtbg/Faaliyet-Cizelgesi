@@ -158,6 +158,11 @@ aside.cekmece .ft .sp{margin-left:auto}
 .bar.grp::before{left:-0px;border-left-color:#3A4852} .bar.grp::after{right:-0px;border-right-color:#3A4852}
 .bar.grp .ilr{height:3px;background:#9FD4C9;bottom:auto;top:0}
 .bar.ms{width:18px !important;height:18px;padding:0;border:0;background:none !important;overflow:visible}
+.bar.kapali{filter:grayscale(.9);opacity:.5;border-style:dashed;border-color:rgba(0,0,0,.35);cursor:pointer;box-shadow:none}
+.bar.kapali:hover{opacity:.75}
+.bar.kapali .ilr{display:none}
+.bar.grp.kapali{opacity:.4}
+.ms-lbl.kapali{opacity:.55}
 .bar.ms .el{position:absolute;left:2px;top:2px;width:13px;height:13px;transform:rotate(45deg);border:1.5px solid rgba(0,0,0,.45);border-radius:1px}
 .bar.ms.clash::after{display:none}
 .bar.ms.krit{box-shadow:none} .bar.ms.krit .el{border:2.5px solid var(--ink)}
@@ -432,7 +437,7 @@ body.dragging #akisBox .node{cursor:crosshair}
     <select id="fltKaynak" title="Kaynak / tesis"></select>
     <select id="fltEtiket" title="Etiket"></select>
     <input id="fltText" type="search" placeholder="Ara…" title="Ad, açıklama, sorumlu, proje, kaynak, etiket">
-    <label class="chk" title="Kapatılmış faaliyetleri listede, yük ve akış şemasında da göster"><input type="checkbox" id="showClosed"> Kapatılanlar</label>
+    <label class="chk" title="Kapatılmış faaliyetleri çizelgede, listede, akış şemasında ve yükte de göster (soluk renkle)"><input type="checkbox" id="showClosed"> Kapatılanlar</label>
   </div>
 </nav>
 
@@ -2086,7 +2091,8 @@ function ipucuMetni(it, flags){
 function renderTimeline(list, flags){
   var wrap = $("tlWrap");
   if(state.view === "week") haftaEtiketi();
-  var acik = list.filter(function(i){ return !i.kapali; });
+  /* "Kapatılanlar" işaretliyse kapatılmış faaliyetler de soluk çizilir */
+  var acik = list.filter(function(i){ return state.showClosed ? true : !i.kapali && !(grupMu(i) && i._hepsiKapali); });
   var win = windowRange(acik);
   var model = cizelgeModel(acik, win);
   var wbs = state.groupBy === "wbs";
@@ -2179,7 +2185,8 @@ function renderTimeline(list, flags){
       var gm = barGeom(it, it.bas, it.bit);
       var c = renkOf(it, cmap);
       var krit = state.showKritik && kritikMi(it);
-      var cls = "bar" + (grupMu(it)?" grp":"") + (msMu(it)?" ms":"") + (flags[it.id]?" clash":"") + (krit?" krit":"") +
+      var soluk = it.kapali || (grupMu(it) && it._hepsiKapali);
+      var cls = "bar" + (grupMu(it)?" grp":"") + (msMu(it)?" ms":"") + (soluk?" kapali":"") + (flags[it.id]?" clash":"") + (krit?" krit":"") +
                 (durum(it) === "gecikti" && !grupMu(it) ? " gec" : "") +
                 (state.selectedId===it.id?" sel":"") + (gm.cutL?" cut-l":"") + (gm.cutR?" cut-r":"");
       var y = it.yuzde || 0;
@@ -2190,16 +2197,16 @@ function renderTimeline(list, flags){
       } else if(msMu(it)){
         html += '<div class="'+cls+'" data-id="'+it.id+'" title="'+esc(ipucuMetni(it, flags))+'" style="left:'+gm.left+'px;top:'+(top+2)+'px">'+
                 '<span class="el" style="background:'+c+'"></span></div>';
-        html += '<div class="tut" data-id="'+it.id+'" style="left:'+(gm.left+21)+'px;top:'+(top+4.5)+'px" title="Sürükleyip başka bir faaliyete bırakın: öncül → ardıl bağı"></div>';
-        html += '<div class="ms-lbl" style="left:'+(gm.left+38)+'px;top:'+(top+3)+'px">'+(flags[it.id]?"⚠ ":"")+'<span class="no">#'+it.no+'</span>'+esc(it.ad)+' · '+fmtAy(it.bas)+'</div>';
+        if(!soluk) html += '<div class="tut" data-id="'+it.id+'" style="left:'+(gm.left+21)+'px;top:'+(top+4.5)+'px" title="Sürükleyip başka bir faaliyete bırakın: öncül → ardıl bağı"></div>';
+        html += '<div class="ms-lbl'+(soluk?" kapali":"")+'" style="left:'+(gm.left+(soluk?24:38))+'px;top:'+(top+3)+'px">'+(soluk?"✓ ":"")+(flags[it.id]?"⚠ ":"")+'<span class="no">#'+it.no+'</span>'+esc(it.ad)+' · '+fmtAy(it.bas)+'</div>';
       } else {
         html += '<div class="'+cls+'" data-id="'+it.id+'" title="'+esc(ipucuMetni(it, flags))+'" style="left:'+gm.left+'px;width:'+gm.w+
                 'px;top:'+top+'px;background:'+c+'">'+
                 (y ? '<span class="ilr" style="width:'+y+'%"></span>' : '') +
-                (flags[it.id]?'<span class="txt">⚠</span>':'') + (gm.w > 34 ? '<span class="txt"><span class="no" style="color:rgba(18,32,42,.55)">#'+it.no+'</span>'+esc(it.ad)+'</span>' : '') +
+                (flags[it.id]?'<span class="txt">⚠</span>':'') + (gm.w > 34 ? '<span class="txt">'+(soluk?'✓ ':'')+'<span class="no" style="color:rgba(18,32,42,.55)">#'+it.no+'</span>'+esc(it.ad)+'</span>' : '') +
                 (gm.w > 200 ? '<span class="tr">'+fmtAy(it.bas)+' – '+fmtAy(it.bit)+' · '+sureKisa(it)+(it.yuzde ? ' · %'+it.yuzde : '')+'</span>' : '') +
                 (it.kapali ? '' : '<span class="bos" title="Sürükleyerek süreyi değiştirin"></span>') + '</div>';
-        html += '<div class="tut" data-id="'+it.id+'" style="left:'+(gm.left+gm.w+3)+'px;top:'+(top+4.5)+'px" title="Sürükleyip başka bir faaliyete bırakın: öncül → ardıl bağı"></div>';
+        if(!soluk) html += '<div class="tut" data-id="'+it.id+'" style="left:'+(gm.left+gm.w+3)+'px;top:'+(top+4.5)+'px" title="Sürükleyip başka bir faaliyete bırakın: öncül → ardıl bağı"></div>';
       }
       if(temelVar){
         var tb = temelOf(it);
@@ -2257,13 +2264,15 @@ function cizBaglar(wrap){
   if(!rotalar.length) return;
   var yollar = rotalar.map(function(r){
     var k = state.showKritik && r.krit && !r.kotu;
-    var renk = r.kotu ? "#B23A26" : k ? "#16212B" : "#5F6F79";
+    var sol = (byId(r.onc)||{}).kapali || (byId(r.ard)||{}).kapali;
+    var renk = r.kotu ? "#B23A26" : k ? "#16212B" : sol ? "#B4BEC3" : "#5F6F79";
     return '<path data-onc="'+r.onc+'" data-ard="'+r.ard+'" d="'+yolSvg(r.pts, 4)+'" fill="none" stroke="'+renk+'" stroke-width="'+(r.kotu?1.6:k?2:1.3)+
-      '"'+(r.kotu?' stroke-dasharray="4 3"':'')+' stroke-linejoin="round" marker-end="url(#'+(r.kotu?"tlOkK":k?"tlOkC":"tlOk")+')"/>';
+      '"'+(r.kotu?' stroke-dasharray="4 3"':sol?' stroke-dasharray="3 3"':'')+' stroke-linejoin="round" marker-end="url(#'+(r.kotu?"tlOkK":k?"tlOkC":sol?"tlOkS":"tlOk")+')"/>';
   });
   tl.insertAdjacentHTML("beforeend",
     '<svg class="links" width="'+tl.scrollWidth+'" height="'+tl.scrollHeight+'" xmlns="http://www.w3.org/2000/svg">'+
     '<defs><marker id="tlOk" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="5" markerHeight="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#5F6F79"/></marker>'+
+    '<marker id="tlOkS" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="5" markerHeight="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#B4BEC3"/></marker>'+
     '<marker id="tlOkC" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="4" markerHeight="4" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#16212B"/></marker>'+
     '<marker id="tlOkK" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#B23A26"/></marker></defs>'+
     yollar.join("") + '</svg>');
@@ -2282,6 +2291,7 @@ function renderLegend(cl){
     (gec ? '<span class="it" style="color:var(--alarm)">▌'+gec+' geciken</span>' : '') +
     (state.showKritik ? '<span class="it"><span class="sw" style="background:#fff;border:2px solid #16212B"></span>kritik yol ('+kr+')</span>' : '') +
     (state.showTemel && state.proj.temel ? '<span class="it"><span class="sw" style="height:4px;background:#A9B5BB;border:0"></span>temel plan</span>' : '') +
+    (state.showClosed && state.items.some(function(i){ return i.kapali; }) ? '<span class="it"><span class="sw" style="background:#C9CFD2;border:1px dashed #8A979E;opacity:.7"></span>✓ kapatıldı</span>' : '') +
     '<span class="it"><span class="sw" style="background:rgba(0,0,0,.08)"></span>hafta sonu</span>' +
     '<span class="it"><span class="sw" style="background:repeating-linear-gradient(135deg,rgba(168,106,18,.25) 0 3px,transparent 3px 6px)"></span>tatil</span>' +
     '<span class="it" style="color:var(--ink-3)">Çubuğu sürükle: taşı · sağ kenar: süre · ○ tutamak: bağ kur</span>';
@@ -3071,6 +3081,7 @@ function akisSvg(flags, disaAktar){
   o.push('<defs><marker id="ok" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">'+
          '<path d="M0,0 L10,5 L0,10 z" fill="#9AA8B0"/></marker>'+
          '<marker id="okS" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#C9D2D0"/></marker>'+
+         '<marker id="okS2" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="5" markerHeight="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#A8C9C2"/></marker>'+
          '<marker id="okB" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="5" markerHeight="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#0E6B60"/></marker>'+
          '<marker id="okK" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="5" markerHeight="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#B23A26"/></marker></defs>');
   o.push('<rect width="'+W+'" height="'+H+'" fill="#FFFFFF"/>');
@@ -3139,15 +3150,15 @@ function akisSvg(flags, disaAktar){
         var cakisma = !!flags[it.id], krit = state.showKritik && kritikMi(it) && !it.kapali;
         var kenar = cakisma ? "#B23A26" : krit ? "#16212B" : "#D3D9D8";
         kon[it.id] = { x:x, y:by, band:bi };
-        dug.push('<g class="node" data-id="'+it.id+'">');
+        dug.push('<g class="node'+(it.kapali?' kapali':'')+'" data-id="'+it.id+'"'+(it.kapali?' opacity=".55"':'')+'>');
         dug.push('<rect class="bg" x="'+x+'" y="'+by+'" width="'+BW+'" height="'+BH+'" rx="3" fill="'+
                (it.kapali ? "#F6F8F7" : "#FFFFFF")+'" stroke="'+kenar+'" stroke-width="'+(cakisma?1.6:krit?2.2:1)+
                '"'+(it.kapali ? ' stroke-dasharray="4 3"' : '')+'/>');
-        dug.push('<rect x="'+x+'" y="'+by+'" width="6" height="'+BH+'" rx="2" fill="'+c+'"/>');
+        dug.push('<rect x="'+x+'" y="'+by+'" width="6" height="'+BH+'" rx="2" fill="'+(it.kapali ? "#B4BEC3" : c)+'"/>');
         if(it.yuzde && !it.kapali) dug.push('<rect x="'+(x+6)+'" y="'+(by+BH-3.5)+'" width="'+((BW-7)*Math.min(100,it.yuzde)/100)+'" height="3" fill="#0E6B60" opacity=".75"/>');
         var tx = x + 14, tw = BW - 24 - (cakisma ? 16 : 0);
         dug.push('<text x="'+tx+'" y="'+(by+20)+'" font-size="12.5" font-weight="600" fill="'+
-               (it.kapali ? "#7C8A94" : "#16212B")+'"><tspan fill="#8A9AA3" font-weight="400">#'+it.no+' </tspan>'+
+               (it.kapali ? "#7C8A94" : "#16212B")+'"><tspan fill="#8A9AA3" font-weight="400">'+(it.kapali ? "✓ " : "")+'#'+it.no+' </tspan>'+
                sx(kisalt((msMu(it) ? "◆ " : "") + it.ad, tw - olc("#"+it.no+" ", FS) - 2, FT))+'</text>');
         if(cakisma) dug.push('<text x="'+(x+BW-12)+'" y="'+(by+20)+'" font-size="12" fill="#B23A26" text-anchor="end">⚠</text>');
         dug.push('<text x="'+tx+'" y="'+(by+38)+'" font-size="11" fill="#4A5A66">'+
@@ -3182,8 +3193,9 @@ function akisSvg(flags, disaAktar){
   engelEk.forEach(function(e, k){ rotaKutu["__baslik"+k] = e; });
   var yanY = [-Math.round(BH/4), Math.round(BH/4)];
   (bagGoster ? tumRotalar(rotaKutu, { x1:2, y1:UST + 2, x2:W - 2, y2:H - (disaAktar ? 20 : 2) }, 7, 40, 90, 16, 9, asamaDolu, yanY) : []).forEach(function(r){
-    o.push('<path data-onc="'+r.onc+'" data-ard="'+r.ard+'" d="'+yolSvg(r.pts, 6)+'" fill="none" stroke="'+(r.kotu?"#B23A26":"#0E6B60")+'" stroke-width="1.6"'+
-      (r.kotu?' stroke-dasharray="5 3"':'')+' stroke-linejoin="round" marker-end="url(#'+(r.kotu?"okK":"okB")+')"/>');
+    var sol = !r.kotu && (((byId(r.onc)||{}).kapali) || ((byId(r.ard)||{}).kapali));   /* kapatılmış faaliyete bağlı ok soluk */
+    o.push('<path data-onc="'+r.onc+'" data-ard="'+r.ard+'" d="'+yolSvg(r.pts, 6)+'" fill="none" stroke="'+(r.kotu?"#B23A26":sol?"#A8C9C2":"#0E6B60")+'" stroke-width="1.6"'+
+      (r.kotu?' stroke-dasharray="5 3"':sol?' stroke-dasharray="4 3"':'')+' stroke-linejoin="round" marker-end="url(#'+(r.kotu?"okK":sol?"okS2":"okB")+')"/>');
     if(r.gecikme){
       /* gecikme etiketi en uzun parçanın ortasına */
       var en = 0, mx = 0, my = 0, yatay = true;
@@ -4304,7 +4316,7 @@ function kirp(ctx, metin, enMax){
 /* opt: { min, max, list, rapor, genislik } — verilmezse ekrandaki görünüm kullanılır */
 function cizelgeCanvas(opt){
   opt = opt || {};
-  var tum = opt.list || visible(), list = tum.filter(function(i){ return !i.kapali; });
+  var tum = opt.list || visible(), list = tum.filter(function(i){ return state.showClosed || (!i.kapali && !(grupMu(i) && i._hepsiKapali)); });
   var win = opt.min != null ? { min:opt.min, max:opt.max } : windowRange(list);
   var model = cizelgeModel(list, win), wbs = state.groupBy === "wbs";
   var satirlar = model.satirlar.filter(function(g){ return g.items.length; });
@@ -4332,7 +4344,8 @@ function cizelgeCanvas(opt){
     ctx.fillStyle = "#16212B"; F(17,true);
     ctx.fillText("Faaliyet Zaman Çizelgesi", M, 22);
     var donem = state.view === "quarter" ? state.qYear + " · Ç" + state.qNum : state.view === "week" ? isoHafta(min).no + ". hafta · " + fmt(min) + " – " + fmt(max) : fmt(min) + " – " + fmt(max);
-    var alt = [donem, model.shown.filter(function(i){ return !grupMu(i); }).length + " açık faaliyet", satirEtiketi().toLocaleLowerCase("tr") + " satırları",
+    var alt = [donem, model.shown.filter(function(i){ return !grupMu(i) && !i.kapali; }).length + " açık faaliyet" +
+               (model.shown.some(function(i){ return i.kapali; }) ? " + " + model.shown.filter(function(i){ return i.kapali && !grupMu(i); }).length + " kapatılmış" : ""), satirEtiketi().toLocaleLowerCase("tr") + " satırları",
                "renk: " + ({sorumlu:"sorumlu",proje:"proje",kaynak:"kaynak"}[state.colorBy])];
     var f = state.filters;
     if(f.sorumlu) alt.push("sorumlu: " + f.sorumlu); if(f.proje) alt.push("proje: " + f.proje);
@@ -4439,7 +4452,9 @@ function cizelgeCanvas(opt){
     ctx.restore();
     g.items.forEach(function(it){
       var by = y + (wbs ? 0 : it._lane*LANE) + 4, gm = geo(it, it.bas, it.bit), x = gm.x, w = gm.w, bh = 22;
-      var c = renkOf(it, cmap), krit = state.showKritik && kritikMi(it);
+      var soluk = it.kapali || (grupMu(it) && it._hepsiKapali);
+      ctx.globalAlpha = soluk ? 0.45 : 1;
+      var c = soluk ? "#C9CFD2" : renkOf(it, cmap), krit = state.showKritik && kritikMi(it);
       if(temelVar && !grupMu(it)){
         var tb = temelOf(it);
         if(tb){ var tg = geo(it, tb.bas, tb.bit); ctx.fillStyle = "#A9B5BB";
@@ -4476,10 +4491,11 @@ function cizelgeCanvas(opt){
       if(w > 34){
         ctx.save(); ctx.beginPath(); ctx.rect(x+4, by, w-10, bh); ctx.clip();
         ctx.fillStyle = "#12202A"; F(11.5);
-        ctx.fillText(kirp(ctx, (flags[it.id] ? "⚠ " : "") + "#" + it.no + " " + it.ad, w-10), x+5, by + bh/2 - 1);
+        ctx.fillText(kirp(ctx, (soluk ? "✓ " : "") + (flags[it.id] ? "⚠ " : "") + "#" + it.no + " " + it.ad, w-10), x+5, by + bh/2 - 1);
         ctx.restore();
       }
     });
+    ctx.globalAlpha = 1;
     y += h;
   });
   var td = todayUTC();
@@ -4508,6 +4524,7 @@ function cizelgeCanvas(opt){
     if(state.showLinks) ac.push("ok: öncül → ardıl (kırmızı kesikli = ihlal)");
     if(state.showKritik) ac.push("siyah çerçeve = kritik yol");
     if(temelVar) ac.push("gri çizgi = temel plan");
+    if(state.showClosed && list.some(function(i){ return i.kapali; })) ac.push("soluk ✓ = kapatıldı");
     ctx.fillText(ac.join("   ·   "), M, ly + 22);
     ctx.fillStyle = "#7C8A94";
     var dipnot = new Date().toLocaleString("tr-TR",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"});

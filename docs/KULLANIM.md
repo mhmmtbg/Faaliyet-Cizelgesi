@@ -66,6 +66,7 @@ Gösterimler:
 | Çubuğun altındaki gri çizgi | Temel plandaki tarih |
 | ◆ ve kesikli dikey çizgi | Kilometre taşı |
 | Koyu özet çubuğu | Grup |
+| Soluk gri, kesikli kenar, ✓ | Kapatılmış faaliyet (yalnızca "Kapatılanlar" işaretliyken; taşınamaz) |
 
 **Fareyle düzenleme:**
 
