@@ -147,6 +147,7 @@ Her proje ayrı bir bant olarak çizilir. Tarihleri örtüşen faaliyetler aynı
 | Kalın siyah çerçeve | Kritik yol |
 | Kutunun altındaki yeşil şerit | İlerleme |
 | ◆ | Kilometre taşı |
+| Soluk kutu, ✓ | Kapatılmış faaliyet ("Kapatılanlar" işaretliyken) |
 
 **Öncül okları** kutusu yeşil bağ oklarını açıp kapatır. Oklar açıkken kutular arasında oklara ayrı koridor bırakılır. Oklar kutuların ve gri aşama çizgilerinin üzerinden geçmez; gerekirse gri çizgiyi dik keser.
 
