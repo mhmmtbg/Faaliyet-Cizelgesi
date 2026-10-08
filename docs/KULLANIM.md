@@ -9,7 +9,7 @@
 | Süzgeçler (sekmelerin sağında) | Sorumlu, proje, kaynak, etiket, metin arama ve "Kapatılanlar". Tüm sekmelere uygulanır. |
 | Sağ çekmece | Faaliyet ekleme ve düzenleme formu. `Esc` ile kapanır. |
 
-Kısayollar: `Ctrl+Z` geri al, `Ctrl+Y` yinele, `Insert` yeni faaliyet, `Alt+1…5` sekmeler (masaüstünde `Ctrl+1…5`), `Ctrl+tekerlek` çizelgede ölçek, `Esc` pencere / çekmece kapatır.
+Kısayollar: `Ctrl+Z` geri al, `Ctrl+Y` yinele, `Insert` yeni faaliyet, `Alt+1…5` sekmeler (masaüstünde `Ctrl+1…5`), `Ctrl+tekerlek` çizelgede ölçek, haftalık görünümde `←` `→` önceki / sonraki hafta, `Esc` pencere / çekmece kapatır.
 
 ## Faaliyet ekleme ve düzenleme
 
@@ -40,12 +40,18 @@ Her kayda otomatik bir numara verilir (`#1`, `#2`…). Numaralar her yerde ve Ex
 
 ## Zaman çizelgesi
 
-- **Görünüm:** Tüm faaliyetler, Çeyrek (‹ › ile dönem değiştirme) ya da Tarih aralığı.
+- **Görünüm:** Tüm faaliyetler, **Haftalık**, Çeyrek (‹ › ile dönem değiştirme) ya da Tarih aralığı.
+- **Haftalık görünüm:**
+  - Pazartesi–pazar tek hafta gösterilir; ölçek 7 günü ekrana sığdırır (pencere boyutu değişince yeniden sığar).
+  - ‹ › düğmeleri ya da `←` `→` tuşları önceki / sonraki haftaya geçer. **Bu hafta** içinde bulunulan haftaya, **Tarihe git…** seçilen tarihin haftasına gider.
+  - Gün başlıklarında gün adı ve tarih, geniş çubuklarda tarih aralığı, süre ve ilerleme yazar. Hafta dışına taşan işler kenarda kesik görünür.
+  - `+` / `−` ile daha da genişletilebilir; **Sığdır** yeniden 7 güne döner.
+  - İş kırılımı satırlarında yalnızca o haftada görünen faaliyetler ve grupları listelenir.
 - **Satırlar:** Sorumlu, proje, kaynak, **iş kırılımı** (her kayıt bir satır; gruplar ▾/▸ ile açılıp kapanır, ⊞/⊟ hepsini açar/kapatır) ya da tek satır.
 - **Renk:** Sorumlu, proje ya da kaynak.
 - **Çakışma:** Aynı sorumlu, aynı kaynak, sorumlu veya kaynak, aynı proje ya da sorumlu veya proje. Kilometre taşları ve gruplar çakışmaya girmez.
 - **Oklar / Kritik yol / Temel plan** kutuları gösterimi açıp kapatır.
-- **Bugün** düğmesi bugüne kaydırır; **Sığdır** tüm aralığı ekrana oturtur.
+- **Ölçek:** Kaydırıcı, `−` `+` ya da `Ctrl+tekerlek`; gün genişliği 2–240 piksel. **Bugün** düğmesi bugüne kaydırır; **Sığdır** tüm aralığı ekrana oturtur.
 
 Gösterimler:
 
@@ -85,7 +91,20 @@ Bağ türü *bitişten başlangıca*dır: öncül bitince ardıl başlar.
 2. **Form:** "Öncül faaliyetler" bölümünden seçip gecikme yazın ve **Ekle**'ye basın.
 3. **Excel:** "Öncül" sütununa aynı dosyadaki numaraları yazın: `3`, `3; 5`, gecikmeli `3+2`.
 
-**Tarih değişince:** Zincirdeki ardılların yeni tarihleri hesaplanır ve onay penceresinde gösterilir. Ardıllar yalnızca öncüllerinden önce başlamaya kalkarsa ileri itilir. "Öncülüne yaslı duran ardılları öne de çek" kutusu, öncül öne alındığında bitişik ardılları da öne getirir. Kapatılmış faaliyetler taşınmaz.
+**Tarih değişince:** Bağlı faaliyeti olan bir işin tarihi değişince (çubuğu sürükleme, sağ kenarından süre değiştirme, formda kaydetme ya da toplu kaydırma) bir uyarı çıkar: "#6 faaliyetini 2 iş günü ileri kaydırdınız — bağlı faaliyetlerin tarihleri de güncellensin mi?"
+
+Pencerede etkilenecek faaliyetler, şu anki ve yeni tarihleriyle listelenir. Seçenekler:
+
+| Seçenek | Ne yapar |
+|---|---|
+| **Bağlı faaliyetleri de aynı miktarda kaydır** (varsayılan) | Ardıllar, işin bitişi ne kadar kaydıysa o kadar kayar. Aradaki gün farkı korunur; işi öne alırsanız ardıllar da öne gelir. |
+| **Öncülleri de aynı miktarda kaydır** | İşaretlenirse öncüller de başlangıç kayması kadar kayar. |
+| **Yalnızca gerekenleri ileri it** | Eski davranış: yalnızca öncülünden önce başlamaya kalkan ardıllar itilir, boşluğu olanlar yerinde kalır. |
+| **Yalnızca bu faaliyeti taşı / kaydet** | Bağlı faaliyetlere dokunmaz. |
+
+- Kayma, iş günü birimli faaliyetlerde iş günü (tatiller atlanır), takvim günü birimlilerde gün olarak uygulanır.
+- Kapatılmış ve tamamlanmış (%100 ya da gerçek bitişi girilmiş) faaliyetler taşınmaz.
+- Kaydırma sonucunda başka bir öncülüyle çakışan iş varsa o da ileri itilir.
 
 **İhlaller:** Bir işi öncülünden önceye koyarsanız iş "⛓ bağımlılık" olarak işaretlenir ve oku kırmızı kesikli çizilir. Düzeltmek için ayrıntıdaki **Bağımlılığa göre hizala**'yı, lejanttaki **Hepsini hizala**'yı ya da **Dosya → Bağımlılık ihlallerini düzelt**'i kullanın.
 
@@ -127,6 +146,8 @@ Her proje ayrı bir bant olarak çizilir. Tarihleri örtüşen faaliyetler aynı
 | Kalın siyah çerçeve | Kritik yol |
 | Kutunun altındaki yeşil şerit | İlerleme |
 | ◆ | Kilometre taşı |
+
+**Öncül okları** kutusu yeşil bağ oklarını açıp kapatır. Oklar açıkken kutular arasında oklara ayrı koridor bırakılır. Oklar kutuların ve gri aşama çizgilerinin üzerinden geçmez; gerekirse gri çizgiyi dik keser.
 
 Gruplar akış şemasında gösterilmez. Kutuya tıklamak ayrıntı penceresini açar; kutuyu sürükleyip başka kutuya bırakmak bağ kurar.
 

@@ -388,7 +388,7 @@ func yeniProc(hwnd, msg, wp, lp uintptr) uintptr {
 				case "__veriKlasoru":
 					exec.Command("explorer", appDir()).Start()
 				case "__hakkinda":
-					msgBox(hwnd, uygAdi+"\nSürüm 1.2\n\nKurulum ve yönetici yetkisi gerektirmez, internet kullanmaz.\n"+
+					msgBox(hwnd, uygAdi+"\nSürüm 1.3\n\nKurulum ve yönetici yetkisi gerektirmez, internet kullanmaz.\n"+
 						"Projeler .fzc dosyalarına kaydedilir.\n\nAyarlar ve kurtarma kaydı:\n"+appDir(), "Hakkında", mbIconInfo)
 				default:
 					jsKomut(k)

@@ -327,6 +327,15 @@ body.dragging #akisBox .node{cursor:crosshair}
 .mask{position:fixed;inset:0;background:rgba(22,33,43,.45);display:flex;align-items:flex-start;
   justify-content:center;padding:30px 16px;z-index:50;overflow:auto}
 .mask#zcMask{z-index:60}
+.zc-mod{display:flex;flex-direction:column;gap:6px;margin:0 0 12px;padding:10px 12px;border:1px solid var(--line-soft);border-radius:var(--radius);background:#F7FAF9}
+.zc-mod .chk{white-space:normal;color:var(--ink);font-size:13px}
+.zc-mod .ek{color:var(--ink-3)}
+.hafta-et{font-weight:600;font-size:12.5px;min-width:150px;text-align:center;white-space:nowrap}
+#haftaSec{position:absolute;left:0;bottom:0;width:100%;height:1px;opacity:0;pointer-events:none;border:0;padding:0}
+.bugun-sutun{position:absolute;top:0;bottom:0;background:rgba(14,107,96,.07);pointer-events:none}
+.bar .tr{color:rgba(18,32,42,.6);font-size:11px;margin-left:6px;flex:0 0 auto;position:relative;z-index:1}
+.tick.gen{font-size:11px;padding-left:6px}
+.tick.gen b{font-weight:600;color:var(--ink-2)}
 .modal{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
   width:min(880px,100%);box-shadow:0 12px 40px rgba(0,0,0,.25)}
 .modal.dar{width:min(560px,100%)}
@@ -437,9 +446,16 @@ body.dragging #akisBox .node{cursor:crosshair}
         <span class="g"><span class="l">Görünüm</span>
           <select id="cView">
             <option value="auto">Tüm faaliyetler</option>
+            <option value="week">Haftalık</option>
             <option value="quarter">Çeyrek</option>
             <option value="range">Tarih aralığı</option>
           </select></span>
+        <span class="g" id="ctlWeek" hidden>
+          <button class="btn sm" id="wPrev" title="Önceki hafta (←)">‹</button>
+          <span id="haftaEt" class="hafta-et"></span>
+          <button class="btn sm" id="wNext" title="Sonraki hafta (→)">›</button>
+          <button class="btn sm" id="wNow" title="İçinde bulunulan hafta">Bu hafta</button>
+          <span style="position:relative"><button class="btn sm" id="wGit" title="Seçilen tarihi içeren haftaya git">Tarihe git…</button><input type="date" id="haftaSec" tabindex="-1" aria-label="Hafta seç"></span></span>
         <span class="g" id="ctlQuarter" hidden>
           <button class="btn sm" id="qPrev" title="Önceki çeyrek">‹</button>
           <select id="qYear"></select>
@@ -474,9 +490,9 @@ body.dragging #akisBox .node{cursor:crosshair}
         <span class="sag">
           <button class="btn sm" id="zToday" title="Bugüne kaydır">Bugün</button>
           <button class="btn sm" id="zOut" title="Uzaklaştır">−</button>
-          <input id="zoom" type="range" min="2" max="48" value="16" title="Ölçek">
+          <input id="zoom" type="range" min="0" max="100" value="40" title="Ölçek (gün genişliği)">
           <button class="btn sm" id="zIn" title="Yakınlaştır">+</button>
-          <button class="btn sm" id="zFit">Sığdır</button>
+          <button class="btn sm" id="zFit" title="Tüm aralığı (haftalık görünümde 7 günü) ekrana sığdır">Sığdır</button>
         </span>
       </div>
       <div class="kaydir" id="tlWrap"></div>
@@ -491,6 +507,7 @@ body.dragging #akisBox .node{cursor:crosshair}
     <section class="pane" id="pAkis" hidden>
       <div class="arac">
         <span class="g"><span class="l">Proje</span><select id="akisProje"><option value="">Tüm projeler</option></select></span>
+        <label class="chk" title="Öncül → ardıl oklarını göster; oklar kutuların ve gri aşama çizgilerinin üzerinden geçmez"><input type="checkbox" id="akisBag" checked> Öncül okları</label>
         <span style="color:var(--ink-3);font-size:12px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1 1 200px">Gri oklar aşama sırası, yeşil oklar öncül → ardıl · tıkla: ayrıntı · sürükle-bırak: bağ kur</span>
         <span class="sag"><button class="btn sm" id="btnAkisPng">PNG kaydet</button></span>
       </div>
@@ -668,6 +685,11 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
     <div class="hd"><h2 id="zcTitle">Bağlı faaliyetler etkilenecek</h2></div>
     <div class="bd">
       <p id="zcSub" style="margin:0 0 12px;color:var(--ink-2)"></p>
+      <div id="zcModG" class="zc-mod" hidden>
+        <label class="chk"><input type="radio" name="zcMod" value="koru" checked> <span><strong>Bağlı faaliyetleri de aynı miktarda kaydır</strong> <span class="ek">— aradaki gün farkı korunur</span></span></label>
+        <label class="chk"><input type="radio" name="zcMod" value="it"> <span>Yalnızca gerekenleri ileri it <span class="ek">— boşluğu olan ardıllar yerinde kalır</span></span></label>
+        <label class="chk" id="zcOnculRow"><input type="checkbox" id="zcOncul"> <span>Öncülleri de aynı miktarda kaydır</span></label>
+      </div>
       <div class="preview" id="zcList" style="margin-top:0;max-height:320px"></div>
       <label id="zcPullRow" class="chk" style="margin-top:12px;white-space:normal">
         <input type="checkbox" id="zcPull" checked>
@@ -759,6 +781,7 @@ var state = {
   view: "auto", qYear: new Date().getFullYear(), qNum: Math.floor(new Date().getMonth()/3)+1,
   rFrom: "", rTo: "",
   ppd: 16, showClosed: false, akisProje: "", showLinks: true, showKritik: false, showTemel: false,
+  haftaBas: "", ppdHafta: 0, akisBag: true,
   kapaliGruplar: {},
   yukMod: "kisi", yukBas: "", yukHafta: 13,
   rapBas: "", rapSure: 7,
@@ -1028,7 +1051,7 @@ function serialize(){
     ayar:{ groupBy:state.groupBy, colorBy:state.colorBy, clashBy:state.clashBy, view:state.view,
            qYear:state.qYear, qNum:state.qNum, rFrom:state.rFrom, rTo:state.rTo, ppd:state.ppd,
            showClosed:state.showClosed, tab:state.tab, akisProje:state.akisProje, showLinks:state.showLinks,
-           showKritik:state.showKritik, showTemel:state.showTemel, kapaliGruplar:Object.keys(state.kapaliGruplar),
+           showKritik:state.showKritik, showTemel:state.showTemel, haftaBas:state.haftaBas, ppdHafta:state.ppdHafta, akisBag:state.akisBag, kapaliGruplar:Object.keys(state.kapaliGruplar),
            yukMod:state.yukMod, yukHafta:state.yukHafta, rapSure:state.rapSure },
     proje: projeKopya(state.proj),
     faaliyetler: state.items.map(itemToRow) };
@@ -1103,6 +1126,9 @@ function applyData(d){
   if(a.qYear) state.qYear = a.qYear;
   if(a.qNum) state.qNum = a.qNum;
   if(a.ppd) state.ppd = a.ppd;
+  state.haftaBas = toUTC(a.haftaBas) !== null ? a.haftaBas : "";
+  state.ppdHafta = num(a.ppdHafta) > 0 ? num(a.ppdHafta) : 0;
+  state.akisBag = a.akisBag !== false;
   if(a.yukHafta) state.yukHafta = a.yukHafta;
   if(a.rapSure) state.rapSure = a.rapSure;
   state.showClosed = !!a.showClosed;
@@ -1338,7 +1364,7 @@ Yigin.prototype.bos = function(){ return !this.k.length; };
 /* port: { x,y (kutu dışındaki çıkış noktası), ex,ey (kutu kenarı), dir (0 D,1 B,2 G,3 K), cost } */
 function rotaBul(engeller, kaynaklar, hedefler, sinir, m, pad0, dolu, sahip){
   if(!kaynaklar.length || !hedefler.length) return null;
-  var inf = m - 0.5, BUK = 16, ARA = Math.max(3, m*0.75);
+  var inf = m - 0.5, BUK = 16, ARA = Math.max(3, m*0.75), SERT = 6;
   dolu = dolu || { h:{}, v:{} }; sahip = sahip || {};
   /* başka oklarla üst üste binme cezası (aynı öncülden çıkan / aynı ardıla giren oklar ortak gövde kullanabilir) */
   function binme(liste, a, b){
@@ -1346,6 +1372,7 @@ function rotaBul(engeller, kaynaklar, hedefler, sinir, m, pad0, dolu, sahip){
     var lo = Math.min(a,b), hi = Math.max(a,b), t = 0;
     for(var k=0;k<liste.length;k++){
       var s2 = liste[k];
+      if(s2.sert) continue;   /* sert hatlar (aşama çizgileri) ayrıca yasaklanır */
       if(s2.onc === sahip.onc || s2.ard === sahip.ard) continue;
       var ov = Math.min(hi, s2.b) - Math.max(lo, s2.a);
       if(ov > 0) t += ov * 1.5 + 10;
@@ -1362,7 +1389,20 @@ function rotaBul(engeller, kaynaklar, hedefler, sinir, m, pad0, dolu, sahip){
     var R = { x1:Math.max(sinir.x1, bx1 - pad), y1:Math.max(sinir.y1, by1 - pad),
               x2:Math.min(sinir.x2, bx2 + pad), y2:Math.min(sinir.y2, by2 + pad) };
     var obs = engeller.filter(function(o){ return o.x2 + m > R.x1 && o.x1 - m < R.x2 && o.y2 + m > R.y1 && o.y1 - m < R.y2; });
+    /* sert hatlar: üzerinden (paralel ve yakın) geçilemez, dik kesmek cezalıdır */
+    var sertH = [], sertV = [];
+    Object.keys(dolu.h).forEach(function(k){ dolu.h[k].forEach(function(s2){ if(s2.sert && s2.b > R.x1 - 20 && s2.a < R.x2 + 20) sertH.push({ c:+k, a:s2.a, b:s2.b }); }); });
+    Object.keys(dolu.v).forEach(function(k){ dolu.v[k].forEach(function(s2){ if(s2.sert && s2.b > R.y1 - 20 && s2.a < R.y2 + 20) sertV.push({ c:+k, a:s2.a, b:s2.b }); }); });
+    function sertMaliyet(yatay, c, p, q){
+      var lo = Math.min(p,q), hi = Math.max(p,q), t = 0, i, s2;
+      var par = yatay ? sertH : sertV, dik = yatay ? sertV : sertH;
+      for(i=0;i<par.length;i++){ s2 = par[i]; if(Math.abs(s2.c - c) < SERT && Math.min(hi, s2.b) - Math.max(lo, s2.a) > 0.5) return Infinity; }
+      for(i=0;i<dik.length;i++){ s2 = dik[i]; if(s2.c > lo && s2.c < hi && c > s2.a - 0.5 && c < s2.b + 0.5) t += 45; }
+      return t;
+    }
     var xs = [R.x1, R.x2], ys = [R.y1, R.y2];
+    sertH.forEach(function(s2){ ys.push(s2.c - SERT - 3, s2.c + SERT + 3); });
+    sertV.forEach(function(s2){ xs.push(s2.c - SERT - 3, s2.c + SERT + 3); });
     kaynaklar.concat(hedefler).forEach(function(p){ xs.push(p.x); ys.push(p.y); });
     obs.forEach(function(o){ xs.push(o.x1 - m, o.x2 + m); ys.push(o.y1 - m, o.y2 + m); });
     /* yalnızca bu bölgeden geçen dolu hatların iki yanına paralel aday hat ekle */
@@ -1440,7 +1480,9 @@ function rotaBul(engeller, kaynaklar, hedefler, sinir, m, pad0, dolu, sahip){
         var nn = ni*ny + nj; if(hucre[nn]) continue;
         if(nd < 2){ if(yKapali[Math.min(ci,ni)*ny + cj]) continue; }
         else if(dKapali[ci*ny + Math.min(cj,nj)]) continue;
-        var nc = c + Math.abs(xs[ni] - xs[ci]) + Math.abs(ys[nj] - ys[cj]) + (nd !== d ? BUK : 0) +
+        var sm = (sertH.length || sertV.length) ? (nd < 2 ? sertMaliyet(true, ys[cj], xs[ci], xs[ni]) : sertMaliyet(false, xs[ci], ys[cj], ys[nj])) : 0;
+        if(sm === Infinity) continue;
+        var nc = c + Math.abs(xs[ni] - xs[ci]) + Math.abs(ys[nj] - ys[cj]) + (nd !== d ? BUK : 0) + sm +
                  (nd < 2 ? binme(hSat[cj], xs[ci], xs[ni]) : binme(vSut[ci], ys[cj], ys[nj]));
         var ns = nn*4 + nd;
         if(nc < dist[ns]){ dist[ns] = nc; prev[ns] = s; yig.ekle(nc, ns); }
@@ -1470,16 +1512,32 @@ function rotaBul(engeller, kaynaklar, hedefler, sinir, m, pad0, dolu, sahip){
 }
 /* kutu için çıkış (öncül) ve giriş (ardıl) noktaları */
 /* sh: yandan çıkış/giriş kuyruğu, sv: üstten/alttan kuyruk (ok ucunun tamamı sığacak uzunlukta) */
-function portlar(r, sh, sv, cikis, yanCeza){
+function portlar(r, sh, sv, cikis, yanCeza, yanY){
   var cy = (r.y1 + r.y2)/2, w = r.x2 - r.x1, k = Math.max(4, Math.min(14, w/3));
-  if(cikis) return [
+  /* yanY: yan kenarda ortadan kaydırılmış ek çıkış/giriş noktaları (aşama çizgileri ortadan geçtiğinde) */
+  var ek = (yanY || []).map(function(dy){
+    return cikis ? { x:r.x2 + sh, y:cy + dy, ex:r.x2, ey:cy + dy, dir:0, cost:4 }
+                 : { x:r.x1 - sh, y:cy + dy, ex:r.x1, ey:cy + dy, dir:0, cost:4 };
+  });
+  if(cikis) return ek.concat([
     { x:r.x2 + sh, y:cy, ex:r.x2, ey:cy, dir:0, cost:0 },
     { x:r.x2 - k, y:r.y1 - sv, ex:r.x2 - k, ey:r.y1, dir:3, cost:yanCeza },
-    { x:r.x2 - k, y:r.y2 + sv, ex:r.x2 - k, ey:r.y2, dir:2, cost:yanCeza } ];
-  return [
+    { x:r.x2 - k, y:r.y2 + sv, ex:r.x2 - k, ey:r.y2, dir:2, cost:yanCeza } ]);
+  return ek.concat([
     { x:r.x1 - sh, y:cy, ex:r.x1, ey:cy, dir:0, cost:0 },
     { x:r.x1 + k, y:r.y1 - sv, ex:r.x1 + k, ey:r.y1, dir:2, cost:yanCeza },
-    { x:r.x1 + k, y:r.y2 + sv, ex:r.x1 + k, ey:r.y2, dir:3, cost:yanCeza } ];
+    { x:r.x1 + k, y:r.y2 + sv, ex:r.x1 + k, ey:r.y2, dir:3, cost:yanCeza } ]);
+}
+/* kuyruğu (kutu kenarı → port noktası) sert bir hatla üst üste binen portları ele */
+function portSertSuz(liste, dolu){
+  if(!dolu) return liste;
+  return liste.filter(function(p){
+    var yatay = p.ey === p.y, c = yatay ? p.y : p.x, lo = yatay ? Math.min(p.ex, p.x) : Math.min(p.ey, p.y), hi = yatay ? Math.max(p.ex, p.x) : Math.max(p.ey, p.y);
+    var tablo = yatay ? dolu.h : dolu.v;
+    return !Object.keys(tablo).some(function(k){
+      return Math.abs(+k - c) < 6 && tablo[k].some(function(s2){ return s2.sert && Math.min(hi, s2.b) - Math.max(lo, s2.a) > 0.5; });
+    });
+  });
 }
 /* çıkış noktası başka bir kutunun içinde kalan portları ele */
 function portSuz(liste, engeller, m, sinir){
@@ -1489,7 +1547,7 @@ function portSuz(liste, engeller, m, sinir){
   });
 }
 /* bütün bağları rotala → [{ pts, kotu, gecikme, onc, ard }] */
-function tumRotalar(kutular, sinir, m, yanCeza, pad, sh, sv, onDolu){
+function tumRotalar(kutular, sinir, m, yanCeza, pad, sh, sv, onDolu, yanY){
   sh = sh || m; sv = sv || m;
   var engeller = Object.keys(kutular).map(function(id){ return kutular[id]; });
   var isler = [];
@@ -1510,8 +1568,8 @@ function tumRotalar(kutular, sinir, m, yanCeza, pad, sh, sv, onDolu){
   isler.forEach(function(j){
     var kotu = !j.it.kapali && j.it.bas < bagSonrasi(j.it, j.p.bit, j.o.gecikme||0);
     var sahip = { onc:j.o.id, ard:j.it.id };
-    var pts = rotaBul(engeller, portSuz(portlar(j.ka, sh, sv, true, yanCeza), engeller, m, sinir),
-                      portSuz(portlar(j.hb, sh, sv, false, yanCeza), engeller, m, sinir), sinir, m, pad, dolu, sahip);
+    var pts = rotaBul(engeller, portSertSuz(portSuz(portlar(j.ka, sh, sv, true, yanCeza, yanY), engeller, m, sinir), onDolu),
+                      portSertSuz(portSuz(portlar(j.hb, sh, sv, false, yanCeza, yanY), engeller, m, sinir), onDolu), sinir, m, pad, dolu, sahip);
     if(!pts){
       var x1 = j.ka.x2, y1 = (j.ka.y1+j.ka.y2)/2, x2 = j.hb.x1, y2 = (j.hb.y1+j.hb.y2)/2, xm = Math.max(x1 + m, (x1 + x2)/2);
       pts = [[x1,y1],[xm,y1],[xm,y2],[x2,y2]];
@@ -1639,6 +1697,93 @@ function planla(items, once, tohum, tohumDa, oneCek){
   });
   degisen.sort(function(a,b){ return a.yBas - b.yBas || a.it.no - b.it.no; });
   return degisen;
+}
+/* ---- gün farkını koruyarak bağlı faaliyetleri kaydırma ----
+   Tarihi değişen faaliyetin (tohum) bitişi kaç gün kaydıysa ardılları da o kadar kayar;
+   istenirse öncülleri başlangıç kayması kadar kayar. İş günü birimli faaliyetlerde iş günü,
+   takvim günü birimlilerde takvim günü sayılır. Kaydırma sonrası başka bir öncül yüzünden
+   ihlale düşen faaliyet (önceden ihlalde değilse) ileri itilir. */
+function isGunuFarki(a, b){
+  if(a === b) return 0;
+  return b > a ? isGunuSay(a + MS_DAY, b) : -isGunuSay(b + MS_DAY, a);
+}
+function kaymaOf(eski, yeniT){ return { ig:isGunuFarki(eski, yeniT), tg:Math.round((yeniT - eski)/MS_DAY) }; }
+function kaymaVar(k){ return !!(k && (k.ig || k.tg)); }
+function birimKaydir(it, t, k){
+  if(!isGunlu(it)) return t + k.tg*MS_DAY;
+  if(!k.ig) return t;
+  return isGunuEkle(isGunuMu(t) ? t : (k.ig > 0 ? oncekiIsGunu(t) : sonrakiIsGunu(t)), k.ig);
+}
+/* kapatılmış ya da tamamlanmış (%100 veya gerçek bitişi girilmiş) faaliyetler kaydırılmaz */
+function sabitMi(it){ return it.kapali || grupMu(it) || (it.yuzde||0) >= 100 || it.gBit != null; }
+function koruPlani(yeni, once, tohum, onculDe){
+  var eski = {}, idx = {}, cur = {}, tohumSet = {};
+  once.forEach(function(i){ eski[i.id] = i; });
+  yeni.forEach(function(i){ idx[i.id] = i; cur[i.id] = { bas:i.bas, bit:i.bit }; });
+  tohum.forEach(function(id){ tohumSet[id] = 1; });
+  var ileri = {}, geri = {};
+  tohum.forEach(function(id){
+    var o = eski[id], n = idx[id]; if(!o || !n) return;
+    ileri[id] = kaymaOf(o.bit, n.bit);
+    geri[id] = kaymaOf(o.bas, n.bas);
+  });
+  var sira = topoSira(yeni), tasinan = {};
+  /* ardıllar: öncülden gelen en ileri kayma */
+  sira.forEach(function(it){
+    if(tohumSet[it.id] || sabitMi(it)) return;
+    var en = null;
+    (it.oncul||[]).forEach(function(o){ var k = ileri[o.id]; if(kaymaVar(k) && (en === null || k.tg > en.tg)) en = k; });
+    if(!en) return;
+    tasinan[it.id] = 1;
+    cur[it.id] = yerlestir(it, birimKaydir(it, it.bas, en));
+    ileri[it.id] = kaymaOf(it.bit, cur[it.id].bit);   /* kendi gerçek kayması ardıllarına geçer */
+  });
+  /* öncüller (isteğe bağlı): ardıldan gelen başlangıç kayması */
+  if(onculDe){
+    sira.slice().reverse().forEach(function(it){
+      if(tohumSet[it.id] || tasinan[it.id] || sabitMi(it)) return;
+      var en = null;
+      ardillar(it.id, yeni).forEach(function(a){ var k = geri[a.id]; if(kaymaVar(k) && (en === null || Math.abs(k.tg) > Math.abs(en.tg))) en = k; });
+      if(!en) return;
+      tasinan[it.id] = 1;
+      cur[it.id] = yerlestir(it, birimKaydir(it, it.bas, en));
+      geri[it.id] = kaymaOf(it.bas, cur[it.id].bas);
+    });
+  }
+  /* başka öncüller yüzünden oluşan yeni ihlalleri ileri iterek gider */
+  var eskiIhlal = {};
+  once.forEach(function(i){ var e = enErken(i, null, once); if(e !== null && i.bas < e) eskiIhlal[i.id] = 1; });
+  sira.forEach(function(it){
+    if(tohumSet[it.id] || it.kapali || grupMu(it) || eskiIhlal[it.id] || !(it.oncul||[]).length) return;
+    var e = enErken(it, cur, yeni);
+    if(e !== null && cur[it.id].bas < e) cur[it.id] = yerlestir(it, e, cur[it.id].bas, cur[it.id].bit);
+  });
+  var degisen = [];
+  yeni.forEach(function(i){
+    if(tohumSet[i.id]) return;
+    if(cur[i.id].bas !== i.bas || cur[i.id].bit !== i.bit)
+      degisen.push({ it:i, eBas:i.bas, eBit:i.bit, yBas:cur[i.id].bas, yBit:cur[i.id].bit });
+  });
+  degisen.sort(function(a,b){ return a.yBas - b.yBas || a.it.no - b.it.no; });
+  return degisen;
+}
+/* tarihi değişen faaliyetin bağlı (açık) öncül/ardılı var mı */
+function bagliVarMi(id, items){
+  var it = null; (items || state.items).forEach(function(x){ if(x.id === id) it = x; });
+  if(!it) return { ard:false, onc:false };
+  var ard = ardillar(id, items).some(function(a){ return !a.kapali; });
+  var onc = (it.oncul||[]).some(function(o){ var p = byId(o.id); return p && !p.kapali; });
+  return { ard:ard, onc:onc };
+}
+/* "#5 faaliyetini 2 iş günü ileri kaydırdınız" metni */
+function kaymaMetni(it, eBas, eBit, yBas, yBit){
+  var ig = isGunlu(it), kb = kaymaOf(eBas, yBas), ke = kaymaOf(eBit, yBit);
+  var vb = ig ? kb.ig : kb.tg, ve = ig ? ke.ig : ke.tg, birim = ig ? " iş günü " : " gün ";
+  var n = "#" + it.no + " faaliyet";
+  if(msMu(it) || vb === ve) return n + "ini " + Math.abs(vb) + birim + (vb > 0 ? "ileri" : "geri") + " kaydırdınız";
+  if(!vb) return n + "inin bitişini " + Math.abs(ve) + birim + (ve > 0 ? "uzattınız" : "kısalttınız");
+  if(!ve) return n + "inin başlangıcını " + Math.abs(vb) + birim + (vb > 0 ? "ileri" : "geri") + " aldınız";
+  return n + "inin başlangıcını " + Math.abs(vb) + birim + (vb > 0 ? "ileri" : "geri") + ", bitişini " + Math.abs(ve) + birim + (ve > 0 ? "ileri" : "geri") + " aldınız";
 }
 function uygulaPlan(degisen){
   var m = {}; degisen.forEach(function(d){ m[d.it.id] = d; });
@@ -1792,8 +1937,23 @@ function findClashes(list){
   return { pairs:pairs, flags:flags };
 }
 
+/* haftalık görünüm: pazartesi–pazar; ölçek varsayılan olarak 7 günü ekrana sığdırır */
+function haftaBaslangici(){ var t = toUTC(state.haftaBas); return pazartesi(t === null ? todayUTC() : t); }
+function etiketGenisligi(){ return state.groupBy === "wbs" ? 290 : 200; }
+function haftaSigdir(){
+  var w = $("tlWrap").clientWidth, a = w - etiketGenisligi() - 4;
+  return a > 140 ? Math.floor(a / 7) : 120;
+}
+function ppdEtkin(){
+  if(state.view === "week") return state.ppdHafta > 0 ? state.ppdHafta : haftaSigdir();
+  return state.ppd;
+}
 /* görüntülenecek zaman penceresi */
 function windowRange(list){
+  if(state.view === "week"){
+    var hb = haftaBaslangici();
+    return { min:hb, max:hb + 6*MS_DAY, kilit:true, hafta:true };
+  }
   if(state.view === "quarter"){
     var y = state.qYear, q = state.qNum;
     return { min:Date.UTC(y,(q-1)*3,1), max:Date.UTC(y,q*3,0), kilit:true };
@@ -1808,8 +1968,8 @@ function windowRange(list){
   var mn = Math.min.apply(null, l.map(function(i){return i.bas;}));
   /* kilometre taşı etiketleri sağda taşmasın */
   var mx = Math.max.apply(null, l.map(function(i){
-    return msMu(i) ? i.bit + Math.ceil((Math.min(i.ad.length, 40)*6.3 + 60)/Math.max(2, state.ppd))*MS_DAY : i.bit; }));
-  var pad = Math.max(1, Math.round(3 - state.ppd/20)) + 1;
+    return msMu(i) ? i.bit + Math.ceil((Math.min(i.ad.length, 40)*6.3 + 60)/Math.max(2, ppdEtkin()))*MS_DAY : i.bit; }));
+  var pad = Math.max(1, Math.round(3 - ppdEtkin()/20)) + 1;
   return { min:mn - pad*MS_DAY, max:mx + (pad+2)*MS_DAY, kilit:false };
 }
 
@@ -1823,9 +1983,16 @@ function cizelgeModel(list, win){
   var shown = list.filter(function(i){ return i.bit >= win.min && i.bas <= win.max && !(grupMu(i) && i._bos); });
   if(state.groupBy === "wbs"){
     var gizli = {};
-    var sira = wbsSirasi(list.filter(function(i){ return !(grupMu(i) && i._bos) || true; }));
+    var sira = wbsSirasi(list);
     var satirlar = [];
+    /* sabit pencerede (hafta, çeyrek, aralık) yalnızca pencerede görünen kayıtlar ve onların grupları */
+    var gorunur = null;
+    if(win.kilit){
+      gorunur = {};
+      shown.forEach(function(it){ gorunur[it.id] = 1; atalar(it).forEach(function(g){ gorunur[g.id] = 1; }); });
+    }
     sira.forEach(function(it){
+      if(gorunur && !gorunur[it.id]) return;
       var ust = atalar(it);
       if(ust.some(function(g){ return state.kapaliGruplar[g.id]; })) return;
       var gor = it.bit >= win.min && it.bas <= win.max && !(grupMu(it) && it._bos);
@@ -1846,7 +2013,7 @@ function cizelgeModel(list, win){
     var arr = groups[k].slice().sort(function(a,b){ return a.bas - b.bas || a.bit - b.bit; });
     var lanes = [];
     arr.forEach(function(it){
-      var placed = false, i, son = msMu(it) ? it.bit + Math.ceil((Math.min(it.ad.length, 32)*6.3 + 40)/state.ppd)*MS_DAY : it.bit;
+      var placed = false, i, son = msMu(it) ? it.bit + Math.ceil((Math.min(it.ad.length, 32)*6.3 + 40)/ppdEtkin())*MS_DAY : it.bit;
       for(i=0;i<lanes.length;i++){ if(lanes[i] < it.bas){ it._lane = i; lanes[i] = son; placed = true; break; } }
       if(!placed){ it._lane = lanes.length; lanes.push(son); }
     });
@@ -1918,6 +2085,7 @@ function ipucuMetni(it, flags){
 
 function renderTimeline(list, flags){
   var wrap = $("tlWrap");
+  if(state.view === "week") haftaEtiketi();
   var acik = list.filter(function(i){ return !i.kapali; });
   var win = windowRange(acik);
   var model = cizelgeModel(acik, win);
@@ -1925,12 +2093,14 @@ function renderTimeline(list, flags){
   document.documentElement.style.setProperty("--label-w", wbs ? "290px" : "200px");
   if(!model.shown.length && !(wbs && model.satirlar.length)){
     wrap.innerHTML = '<div class="empty">' +
-      (state.items.length ? (suzgecVar() ? "Süzgece uyan açık faaliyet yok." : "Bu aralıkta açık faaliyet yok.") :
+      (state.items.length ? (suzgecVar() ? "Süzgece uyan açık faaliyet yok." :
+        win.hafta ? "Bu haftada (" + fmtAy(win.min) + " – " + fmtAy(win.max) + ") açık faaliyet yok. ‹ › ile diğer haftalara geçebilirsiniz." : "Bu aralıkta açık faaliyet yok.") :
        'Henüz faaliyet yok. <strong>+ Yeni faaliyet</strong> ile ekleyin ya da Excel dosyanızı pencereye sürükleyin.') + '</div>';
     cizim.total = 0;
     return;
   }
-  var ppd = state.ppd, min = win.min, max = win.max;
+  var ppd = ppdEtkin(), min = win.min, max = win.max;
+  $("zoom").value = zoomDeger(ppd);
   var total = days(min,max), W = total * ppd, LP = seritAdim();
   var LW = wbs ? 290 : 200;
   cizim = { min:min, ppd:ppd, total:total, LP:LP, max:max };
@@ -1949,7 +2119,10 @@ function renderTimeline(list, flags){
       run = off ? i : -1; runTatil = tat;
     }
   }
-  if(td >= min && td <= max) bg += '<div class="today" style="left:'+gunX(td)+'px"></div>';
+  if(td >= min && td <= max){
+    if(ppd >= 40) bg += '<div class="bugun-sutun" style="left:'+gunX(td)+'px;width:'+ppd+'px"></div>';
+    bg += '<div class="today" style="left:'+gunX(td)+'px"></div>';
+  }
   model.shown.forEach(function(it){
     if(msMu(it)) bg += '<div class="ms-cizgi" style="left:'+(gunX(it.bas) + ppd/2)+'px;top:42px;bottom:0"></div>';
   });
@@ -1973,9 +2146,10 @@ function renderTimeline(list, flags){
     var tt = min + i*MS_DAY, dd = new Date(tt), isMon = dd.getUTCDay() === 1;
     if(step === 1 || (step === 2 && i%2===0) || (step >= 7 && isMon)){
       var ta = tatilAdi(tt);
-      html += '<div class="tick'+(isMon?' mon':'')+(step <= 2 && !isGunuMu(tt) ? ' off' : '')+'" style="left:'+(i*ppd)+'px;width:'+(ppd*(step===1?1:step))+'px"'+
-              (ta ? ' title="'+esc(ta)+'"' : '')+'>'+
-              (ppd>=34 ? dd.getUTCDate()+" "+GUNLER[dd.getUTCDay()] : dd.getUTCDate())+'</div>';
+      var etk = ppd >= 110 ? '<b>' + GUNLER_UZUN[dd.getUTCDay()] + '</b> ' + dd.getUTCDate() + ' ' + AYLAR[dd.getUTCMonth()] + (ta && ppd >= 200 ? ' · ' + esc(ta) : '')
+              : ppd >= 34 ? dd.getUTCDate()+" "+GUNLER[dd.getUTCDay()] : dd.getUTCDate();
+      html += '<div class="tick'+(isMon?' mon':'')+(ppd >= 110 ? ' gen' : '')+(step <= 2 && !isGunuMu(tt) ? ' off' : '')+'" style="left:'+(i*ppd)+'px;width:'+(ppd*(step===1?1:step))+'px"'+
+              (ta ? ' title="'+esc(ta)+'"' : '')+'>'+etk+'</div>';
     }
   }
   if(td >= min && td <= max){
@@ -2023,6 +2197,7 @@ function renderTimeline(list, flags){
                 'px;top:'+top+'px;background:'+c+'">'+
                 (y ? '<span class="ilr" style="width:'+y+'%"></span>' : '') +
                 (flags[it.id]?'<span class="txt">⚠</span>':'') + (gm.w > 34 ? '<span class="txt"><span class="no" style="color:rgba(18,32,42,.55)">#'+it.no+'</span>'+esc(it.ad)+'</span>' : '') +
+                (gm.w > 200 ? '<span class="tr">'+fmtAy(it.bas)+' – '+fmtAy(it.bit)+' · '+sureKisa(it)+(it.yuzde ? ' · %'+it.yuzde : '')+'</span>' : '') +
                 (it.kapali ? '' : '<span class="bos" title="Sürükleyerek süreyi değiştirin"></span>') + '</div>';
         html += '<div class="tut" data-id="'+it.id+'" style="left:'+(gm.left+gm.w+3)+'px;top:'+(top+4.5)+'px" title="Sürükleyip başka bir faaliyete bırakın: öncül → ardıl bağı"></div>';
       }
@@ -2207,15 +2382,26 @@ function tarihDegistir(id, bas, bit){
     state.items = yeni;
     if(uygula) uygulaPlan(liste);
     zincirKapat(); render();
-    bildir(mesaj + (uygula && liste.length ? ", " + liste.length + " ardıl kaydırıldı." : ".") + (ihlalVar(byId(id)) ? " ⛓ Öncülünden önce başlıyor." : ""), geriAl);
+    bildir(mesaj + (uygula && liste.length ? ", " + liste.length + " bağlı faaliyet kaydırıldı." : ".") + (ihlalVar(byId(id)) ? " ⛓ Öncülünden önce başlıyor." : ""), geriAl);
   };
-  if(!ileri.length && !cek.length){ bitir(false, []); return; }
-  var kay = Math.round((bas - it.bas)/MS_DAY), kayB = Math.round((bit - it.bit)/MS_DAY);
-  zincirSor("Bağlı faaliyetler etkilenecek",
-    '<strong>#'+it.no+' '+esc(it.ad)+'</strong>: '+fmtKisa(it.bas)+' – '+fmtKisa(it.bit)+' → '+fmtKisa(bas)+' – '+fmtKisa(bit)+
-    (kayB ? ' (bitiş '+(kayB>0?'+':'')+kayB+' g)' : (kay ? ' ('+(kay>0?'+':'')+kay+' g)' : '')) +
-    '. Bu değişiklik aşağıdaki ardılların tarihlerini etkiliyor.',
-    ileri, cek, bitir, "Yalnızca bu faaliyeti taşı");
+  bagliSor(it, rec, yeni, once, ileri, cek, bitir, "Yalnızca bu faaliyeti taşı");
+}
+/* tarihi değişen faaliyetin bağlıları varsa "x gün kaydırdınız, bağlılar da güncellensin mi?" diye sor */
+function bagliSor(eski, rec, yeni, once, ileri, cek, bitir, tekEtiket){
+  var bv = bagliVarMi(rec.id, yeni);
+  var tarihDegisti = eski.bas !== rec.bas || eski.bit !== rec.bit;
+  var koru = tarihDegisti && (bv.ard || bv.onc) ? { fn:function(o){ return koruPlani(yeni, once, [rec.id], o); }, onculVar:bv.onc } : null;
+  if(!koru && !ileri.length && !cek.length){ bitir(false, []); return; }
+  var ad = '<strong>#'+rec.no+' '+esc(rec.ad)+'</strong>';
+  var tarih = fmtKisa(eski.bas)+(msMu(rec) ? '' : ' – '+fmtKisa(eski.bit))+' → <strong>'+fmtKisa(rec.bas)+(msMu(rec) ? '' : ' – '+fmtKisa(rec.bit))+'</strong>';
+  if(koru){
+    zincirSor(kaymaMetni(rec, eski.bas, eski.bit, rec.bas, rec.bit),
+      ad + ': ' + tarih + '.<br>Bağlı faaliyetlerin tarihleri de güncellensin mi?',
+      ileri, cek, bitir, tekEtiket, koru);
+  } else {
+    zincirSor("Bağlı faaliyetler etkilenecek", ad + ': ' + tarih + '. Bu değişiklik aşağıdaki ardılların tarihlerini etkiliyor.',
+      ileri, cek, bitir, tekEtiket);
+  }
 }
 
 /* ================= sürükleyerek öncül → ardıl bağı kur =================
@@ -2560,12 +2746,15 @@ function topluUygula(){
     state.items = yeni; if(uygula) uygulaPlan(liste);
     zincirKapat(); render();
     bildir(ids.length + " faaliyet güncellendi, " + kayan.length + " faaliyet " + (n>0?"+":"") + n + " gün kaydırıldı" +
-      (uygula && liste.length ? "; " + liste.length + " ardıl da kaydı." : "."), geriAl);
+      (uygula && liste.length ? "; " + liste.length + " bağlı faaliyet de kaydı." : "."), geriAl);
   };
-  if(!ileri.length && !cek.length){ bitir(false, []); return; }
-  zincirSor("Toplu kaydırma: bağlı faaliyetler etkilenecek",
-    kayan.length + ' faaliyet ' + (n>0?"+":"") + n + ' gün kaydırılıyor. Zincirdeki ardılların yeni tarihleri:',
-    ileri, cek, bitir, "Yalnızca seçilenleri kaydır");
+  var bagli = kayan.some(function(id){ var b = bagliVarMi(id, yeni); return b.ard || b.onc; });
+  var onculVar = kayan.some(function(id){ return bagliVarMi(id, yeni).onc; });
+  var koru = bagli ? { fn:function(o){ return koruPlani(yeni, once, kayan, o); }, onculVar:onculVar } : null;
+  if(!koru && !ileri.length && !cek.length){ bitir(false, []); return; }
+  zincirSor(kayan.length + " faaliyeti " + Math.abs(n) + " gün " + (n > 0 ? "ileri" : "geri") + " kaydırdınız",
+    'Seçilen faaliyetler ' + (n>0?"+":"") + n + ' gün (iş günü faaliyetlerde iş günü) kayıyor. Bağlı faaliyetlerin tarihleri de güncellensin mi?',
+    ileri, cek, bitir, "Yalnızca seçilenleri kaydır", koru);
 }
 
 /* ================= yük ================= */
@@ -2862,7 +3051,9 @@ function akisSvg(flags, disaAktar){
   var notVar = data.some(function(b){ return b.stages.some(function(st){
     return st.some(function(it){ return !!(it.not && it.not.trim()); }); }); });
   var bagVar0 = data.some(function(b){ return b.stages.some(function(st){ return st.some(function(it){ return (it.oncul||[]).length; }); }); });
-  var BW = 208, BH = notVar ? 100 : 68, HG = 56, VG = bagVar0 ? 18 : 12, HDR = 30, BAND = bagVar0 ? 30 : 26, PAD = 22;
+  /* öncül okları gösterilecekse kutular arasında oklara ayrı koridor bırakılır */
+  var bagGoster = state.akisBag && bagVar0;
+  var BW = 208, BH = notVar ? 100 : 68, HG = bagGoster ? 96 : 56, VG = bagGoster ? 30 : 12, HDR = 30, BAND = bagGoster ? 44 : 26, PAD = 22;
   var FN = "11px 'Segoe UI', Arial, sans-serif";
   var FT = "600 12.5px 'Segoe UI', Arial, sans-serif", FS = "11px 'Segoe UI', Arial, sans-serif";
   var UST = disaAktar ? 52 : 0;
@@ -2917,8 +3108,8 @@ function akisSvg(flags, disaAktar){
       var gri = '" stroke="'+asamaRenk+'" stroke-width="1.2"/>';
       var cizgi = function(x1, y1, x2, y2){
         o.push('<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+gri);
-        if(y1 === y2) (asamaDolu.h[y1] = asamaDolu.h[y1] || []).push({ a:Math.min(x1,x2), b:Math.max(x1,x2), onc:null, ard:null });
-        else (asamaDolu.v[x1] = asamaDolu.v[x1] || []).push({ a:Math.min(y1,y2), b:Math.max(y1,y2), onc:null, ard:null });
+        if(y1 === y2) (asamaDolu.h[y1] = asamaDolu.h[y1] || []).push({ a:Math.min(x1,x2), b:Math.max(x1,x2), onc:null, ard:null, sert:true });
+        else (asamaDolu.v[x1] = asamaDolu.v[x1] || []).push({ a:Math.min(y1,y2), b:Math.max(y1,y2), onc:null, ard:null, sert:true });
       };
       if(sonraki){
         var oy = y0 + h/2, cx = x + BW + 8, nx = x + BW + HG, hedefX = sonraki.length > 1 ? nx - 8 : nx - 2;
@@ -2989,7 +3180,8 @@ function akisSvg(flags, disaAktar){
   var rotaKutu = {};
   Object.keys(kutu).forEach(function(id){ rotaKutu[id] = kutu[id]; });
   engelEk.forEach(function(e, k){ rotaKutu["__baslik"+k] = e; });
-  tumRotalar(rotaKutu, { x1:2, y1:UST + 2, x2:W - 2, y2:H - (disaAktar ? 20 : 2) }, 6, 40, 90, 16, 9, asamaDolu).forEach(function(r){
+  var yanY = [-Math.round(BH/4), Math.round(BH/4)];
+  (bagGoster ? tumRotalar(rotaKutu, { x1:2, y1:UST + 2, x2:W - 2, y2:H - (disaAktar ? 20 : 2) }, 7, 40, 90, 16, 9, asamaDolu, yanY) : []).forEach(function(r){
     o.push('<path data-onc="'+r.onc+'" data-ard="'+r.ard+'" d="'+yolSvg(r.pts, 6)+'" fill="none" stroke="'+(r.kotu?"#B23A26":"#0E6B60")+'" stroke-width="1.6"'+
       (r.kotu?' stroke-dasharray="5 3"':'')+' stroke-linejoin="round" marker-end="url(#'+(r.kotu?"okK":"okB")+')"/>');
     if(r.gecikme){
@@ -3447,42 +3639,57 @@ function saveForm(){
     if(uygula) uygulaPlan(liste);
     normalizeItems(); colorCache.key = "";
     zincirKapat(); formuKapat(true); render();
-    bildir("#" + rec.no + " kaydedildi" + (uygula && liste.length ? ", " + liste.length + " ardıl güncellendi." : "."), geriAl);
+    bildir("#" + rec.no + " kaydedildi" + (uygula && liste.length ? ", " + liste.length + " bağlı faaliyet güncellendi." : "."), geriAl);
   };
-  if(!ileri.length && !cek.length){ bitir(false, []); return; }
-  var kay = Math.round((rec.bas - eski.bas)/MS_DAY), kayB = Math.round((rec.bit - eski.bit)/MS_DAY);
-  zincirSor("Bağlı faaliyetler etkilenecek",
-    '<strong>#'+rec.no+' '+esc(rec.ad)+'</strong>: '+fmtKisa(eski.bas)+' – '+fmtKisa(eski.bit)+' → '+
-    fmtKisa(rec.bas)+' – '+fmtKisa(rec.bit)+
-    (kayB ? ' (bitiş '+(kayB>0?'+':'')+kayB+' g)' : (kay ? ' ('+(kay>0?'+':'')+kay+' g)' : '')) +
-    '. Bu değişiklik aşağıdaki ardılların tarihlerini etkiliyor.',
-    ileri, cek, bitir, "Yalnızca bu faaliyeti kaydet");
+  bagliSor(eski, rec, yeni, once, ileri, cek, bitir, "Yalnızca bu faaliyeti kaydet");
 }
 
 /* ---- zincirleme güncelleme onay penceresi ---- */
 var bekleyen = null;
-function zincirSor(baslik, aciklama, ileri, cek, tamamla, tekBasinaEtiket){
-  if(!ileri.length && !cek.length){ tamamla(false, []); return; }
-  bekleyen = { ileri:ileri, cek:cek, tamamla:tamamla };
+/* koru: { fn(onculDe) → liste, onculVar } verilirse "gün farkını koru" / "yalnızca ileri it" seçimi gösterilir */
+function zincirSor(baslik, aciklama, ileri, cek, tamamla, tekBasinaEtiket, koru){
+  var koruBos = !koru || (!koru.fn(false).length && !(koru.onculVar && koru.fn(true).length));
+  if(!ileri.length && !cek.length && koruBos){ tamamla(false, []); return; }
+  bekleyen = { ileri:ileri, cek:cek, tamamla:tamamla, koru:koru || null, onbellek:{} };
   $("zcTitle").textContent = baslik;
   $("zcSub").innerHTML = aciklama;
-  var farkli = cek.length !== ileri.length || cek.some(function(d,k){ return !ileri[k] || ileri[k].it.id !== d.it.id || ileri[k].yBas !== d.yBas; });
-  $("zcPullRow").hidden = !farkli;
+  $("zcModG").hidden = !koru;
+  if(koru){
+    $("zcPullRow").hidden = true;
+    document.querySelector('input[name="zcMod"][value="koru"]').checked = true;
+    $("zcOnculRow").hidden = !koru.onculVar;
+    $("zcOncul").checked = false;
+  } else {
+    var farkli = cek.length !== ileri.length || cek.some(function(d,k){ return !ileri[k] || ileri[k].it.id !== d.it.id || ileri[k].yBas !== d.yBas; });
+    $("zcPullRow").hidden = !farkli;
+  }
   $("zcPull").checked = true;
   $("zcOnly").hidden = !tekBasinaEtiket;
   if(tekBasinaEtiket) $("zcOnly").textContent = tekBasinaEtiket;
   zincirListe();
   $("zcMask").hidden = false;
 }
+function zincirSecili(){
+  var b = bekleyen; if(!b) return [];
+  if(b.koru){
+    var mod = (document.querySelector('input[name="zcMod"]:checked') || {}).value;
+    $("zcOncul").disabled = mod !== "koru";
+    if(mod !== "koru") return b.ileri;
+    var k = $("zcOncul").checked ? "o" : "a";
+    if(!b.onbellek[k]) b.onbellek[k] = b.koru.fn(k === "o");
+    return b.onbellek[k];
+  }
+  return $("zcPull").checked ? b.cek : b.ileri;
+}
 function zincirListe(){
-  var l = $("zcPull").checked ? bekleyen.cek : bekleyen.ileri;
+  var l = zincirSecili();
   var html = '<table><thead><tr><th>No</th><th>Faaliyet</th><th>Sorumlu</th><th>Şu an</th><th>Yeni tarih</th><th class="num">Kayma</th></tr></thead><tbody>';
   l.forEach(function(d){
-    var g = Math.round((d.yBas - d.eBas)/MS_DAY);
+    var ig = isGunlu(d.it), g = ig ? isGunuFarki(d.eBas, d.yBas) : Math.round((d.yBas - d.eBas)/MS_DAY);
     html += '<tr><td class="num l">#'+d.it.no+'</td><td>'+(msMu(d.it)?"◆ ":"")+esc(d.it.ad)+'</td><td>'+esc(d.it.sorumlu||"—")+'</td>'+
       '<td class="dt">'+fmtKisa(d.eBas)+(msMu(d.it)?'':' – '+fmtKisa(d.eBit))+'</td>'+
       '<td class="dt"><strong>'+fmtKisa(d.yBas)+(msMu(d.it)?'':' – '+fmtKisa(d.yBit))+'</strong></td>'+
-      '<td class="num" style="color:'+(g>0?'var(--alarm)':'var(--accent)')+'">'+(g>0?"+":"")+g+' g</td></tr>';
+      '<td class="num" style="color:'+(g>0?'var(--alarm)':'var(--accent)')+'">'+(g>0?"+":"")+g+(ig?' ig':' g')+'</td></tr>';
   });
   if(!l.length) html += '<tr><td colspan="6" style="color:var(--ink-3)">Ardıllarda tarih değişikliği yok.</td></tr>';
   $("zcList").innerHTML = html + '</tbody></table>';
@@ -4105,7 +4312,7 @@ function cizelgeCanvas(opt){
   var flags = findClashes(tum).flags, cmap = colorMap();
   var min = win.min, max = win.max, total = days(min,max);
   var LW = wbs ? 260 : 190, M = opt.rapor ? 6 : 18;
-  var ppd = opt.genislik ? Math.max(3, Math.floor((opt.genislik - LW - 2*M)/total)) : Math.max(2, Math.min(state.ppd, Math.floor(11000/total)));
+  var ppd = opt.genislik ? Math.max(3, Math.floor((opt.genislik - LW - 2*M)/total)) : Math.max(2, Math.min(ppdEtkin(), Math.floor(11000/total)));
   var TOP = opt.rapor ? 4 : 62, HEAD = 44, LANE = seritAdim(), PAD = wbs ? 0 : 8;
   var rowH = function(g){ return wbs ? LANE : g.laneCount*LANE + PAD; };
   var govde = satirlar.reduce(function(a,g){ return a + rowH(g); }, 0);
@@ -4124,7 +4331,7 @@ function cizelgeCanvas(opt){
   if(!opt.rapor){
     ctx.fillStyle = "#16212B"; F(17,true);
     ctx.fillText("Faaliyet Zaman Çizelgesi", M, 22);
-    var donem = state.view === "quarter" ? state.qYear + " · Ç" + state.qNum : fmt(min) + " – " + fmt(max);
+    var donem = state.view === "quarter" ? state.qYear + " · Ç" + state.qNum : state.view === "week" ? isoHafta(min).no + ". hafta · " + fmt(min) + " – " + fmt(max) : fmt(min) + " – " + fmt(max);
     var alt = [donem, model.shown.filter(function(i){ return !grupMu(i); }).length + " açık faaliyet", satirEtiketi().toLocaleLowerCase("tr") + " satırları",
                "renk: " + ({sorumlu:"sorumlu",proje:"proje",kaynak:"kaynak"}[state.colorBy])];
     var f = state.filters;
@@ -4329,8 +4536,10 @@ function syncViewControls(){
   $("cView").value = state.view;
   $("ctlQuarter").hidden = state.view !== "quarter";
   $("ctlRange").hidden = state.view !== "range";
+  $("ctlWeek").hidden = state.view !== "week";
   $("cGroup").value = state.groupBy; $("cColor").value = state.colorBy; $("cClash").value = state.clashBy;
-  $("zoom").value = state.ppd;
+  $("zoom").value = zoomDeger(ppdEtkin());
+  $("akisBag").checked = state.akisBag;
   $("showClosed").checked = state.showClosed;
   $("cLinks").checked = state.showLinks;
   $("cKritik").checked = state.showKritik;
@@ -4358,31 +4567,52 @@ function shiftQuarter(d){
   state.qNum = q; state.qYear = y;
   render();
 }
+/* ölçek kaydırıcısı logaritmik: 0–100 → gün başına 2–240 piksel */
+var ZOOM_MAX = 240;
+function zoomDeger(ppd){ return Math.round(Math.log(Math.max(2, ppd)/2) / Math.log(ZOOM_MAX/2) * 100); }
+function zoomPpd(v){ return Math.round(2 * Math.pow(ZOOM_MAX/2, v/100)); }
 function fitZoom(){
+  if(state.view === "week"){ state.ppdHafta = 0; render(); $("tlWrap").scrollLeft = 0; return; }
   var win = windowRange(visible().filter(function(i){ return !i.kapali; }));
   var total = days(win.min, win.max);
-  var avail = $("tlWrap").clientWidth - (state.groupBy === "wbs" ? 290 : 200) - 8;
+  var avail = $("tlWrap").clientWidth - etiketGenisligi() - 8;
   if(avail > 40 && total > 0){
-    state.ppd = Math.max(2, Math.min(48, Math.floor(avail/total)));
-    $("zoom").value = state.ppd;
+    state.ppd = Math.max(2, Math.min(ZOOM_MAX, Math.floor(avail/total)));
     render();
   }
 }
 function buguneGit(){
   var td = todayUTC();
+  if(state.view === "week"){ haftayaGit(td); return; }
   if(!cizim.total || td < cizim.min || td > cizim.max){
     if(state.view !== "auto"){ state.view = "range"; state.rFrom = toISO(td - 14*MS_DAY); state.rTo = toISO(td + 76*MS_DAY); syncViewControls(); render(); }
     else { bildir("Bugün, çizelgedeki tarih aralığının dışında."); return; }
   }
   var wrap = $("tlWrap");
-  wrap.scrollLeft = Math.max(0, gunX(td) - (wrap.clientWidth - 200) / 3);
+  wrap.scrollLeft = Math.max(0, gunX(td) - (wrap.clientWidth - etiketGenisligi()) / 3);
 }
 function zoomAyarla(yeni){
-  var wrap = $("tlWrap"), lw = state.groupBy === "wbs" ? 290 : 200;
-  var merkezGun = (wrap.scrollLeft + (wrap.clientWidth - lw)/2) / state.ppd;
-  state.ppd = sinirla(yeni, 2, 48); $("zoom").value = state.ppd;
+  var wrap = $("tlWrap"), lw = etiketGenisligi(), once = ppdEtkin();
+  var merkezGun = (wrap.scrollLeft + (wrap.clientWidth - lw)/2) / once;
+  yeni = sinirla(Math.round(yeni), 2, ZOOM_MAX);
+  if(state.view === "week") state.ppdHafta = yeni; else state.ppd = yeni;
   render();
-  wrap.scrollLeft = Math.max(0, merkezGun * state.ppd - (wrap.clientWidth - lw)/2);
+  wrap.scrollLeft = Math.max(0, merkezGun * ppdEtkin() - (wrap.clientWidth - lw)/2);
+}
+/* haftalık görünüm gezinme */
+function haftayaGit(t){
+  state.view = "week";
+  state.haftaBas = toISO(pazartesi(t));
+  syncViewControls(); render();
+  $("tlWrap").scrollLeft = 0;
+}
+function haftaKaydir(n){ haftayaGit(haftaBaslangici() + n*7*MS_DAY); }
+function haftaEtiketi(){
+  var hb = haftaBaslangici(), hs = hb + 6*MS_DAY, d1 = new Date(hb), d2 = new Date(hs);
+  var aralik = d1.getUTCMonth() === d2.getUTCMonth() ? d1.getUTCDate() + "–" + d2.getUTCDate() + " " + AYLAR[d2.getUTCMonth()] : fmtAy(hb) + " – " + fmtAy(hs);
+  var bu = pazartesi(todayUTC()) === hb;
+  $("haftaEt").textContent = (bu ? "Bu hafta · " : "") + isoHafta(hb).no + ". hafta · " + aralik + " " + d2.getUTCFullYear();
+  $("haftaSec").value = toISO(hb);
 }
 function tumunuSil(){
   if(!state.items.length) return;
@@ -4447,10 +4677,11 @@ $("cLinks").addEventListener("change", function(){ state.showLinks = this.checke
 $("cKritik").addEventListener("change", function(){ state.showKritik = this.checked; render(); });
 $("cTemel").addEventListener("change", function(){ state.showTemel = this.checked; render(); });
 $("zcPull").addEventListener("change", zincirListe);
+$("zcOncul").addEventListener("change", zincirListe);
+each(document.querySelectorAll('input[name="zcMod"]'), function(r){ r.addEventListener("change", zincirListe); });
 $("zcApply").addEventListener("click", function(){
   if(!bekleyen) return;
-  var l = $("zcPull").checked ? bekleyen.cek : bekleyen.ileri;
-  bekleyen.tamamla(true, l);
+  bekleyen.tamamla(true, zincirSecili());
 });
 $("zcOnly").addEventListener("click", function(){ if(bekleyen) bekleyen.tamamla(false, []); });
 $("zcCancel").addEventListener("click", function(){ zincirKapat(); render(); });
@@ -4458,6 +4689,14 @@ $("zcMask").addEventListener("click", function(e){ if(e.target === this){ zincir
 
 $("cView").addEventListener("change", function(){
   state.view = this.value;
+  if(state.view === "week" && !state.haftaBas){
+    /* ekranda bugün varsa bu haftaya, yoksa ekrandaki ilk faaliyetin haftasına */
+    var acikIs = visible().filter(function(i){ return !i.kapali && !grupMu(i); });
+    var td = todayUTC(), ilk = acikIs.length ? Math.min.apply(null, acikIs.map(function(i){ return i.bas; })) : td;
+    var son = acikIs.length ? Math.max.apply(null, acikIs.map(function(i){ return i.bit; })) : td;
+    state.haftaBas = toISO(pazartesi(td >= ilk && td <= son ? td : ilk));
+  }
+  $("ctlWeek").hidden = state.view !== "week";
   if(state.view === "range" && !state.rFrom){
     var t = todayUTC();
     state.rFrom = toISO(t - 15*MS_DAY); state.rTo = toISO(t + 75*MS_DAY);
@@ -4493,14 +4732,29 @@ $("rapBas").addEventListener("change", function(){ state.rapBas = this.value; re
 $("rapSure").addEventListener("change", function(){ state.rapSure = +this.value; render(); });
 $("rapYazdir").addEventListener("click", yazdir);
 
-$("zoom").addEventListener("input", function(){ zoomAyarla(+this.value); });
-$("zIn").addEventListener("click", function(){ zoomAyarla(state.ppd + 4); });
-$("zOut").addEventListener("click", function(){ zoomAyarla(state.ppd - 4); });
+$("zoom").addEventListener("input", function(){ zoomAyarla(zoomPpd(+this.value)); });
+$("zIn").addEventListener("click", function(){ zoomAyarla(Math.max(ppdEtkin() + 2, ppdEtkin() * 1.25)); });
+$("zOut").addEventListener("click", function(){ zoomAyarla(Math.min(ppdEtkin() - 2, ppdEtkin() / 1.25)); });
+$("wPrev").addEventListener("click", function(){ haftaKaydir(-1); });
+$("wNext").addEventListener("click", function(){ haftaKaydir(1); });
+$("wNow").addEventListener("click", function(){ haftayaGit(todayUTC()); });
+$("wGit").addEventListener("click", function(){
+  var el = $("haftaSec");
+  try{ if(el.showPicker){ el.showPicker(); return; } }catch(e){}
+  el.style.pointerEvents = "auto"; el.focus(); el.click();
+});
+$("haftaSec").addEventListener("change", function(){ var t = toUTC(this.value); if(t !== null) haftayaGit(t); });
+$("akisBag").addEventListener("change", function(){ state.akisBag = this.checked; render(); });
+var boyutSure = null;
+window.addEventListener("resize", function(){
+  if(state.tab !== "cizelge" || state.view !== "week" || state.ppdHafta) return;
+  clearTimeout(boyutSure); boyutSure = setTimeout(render, 120);
+});
 $("zFit").addEventListener("click", fitZoom);
 $("zToday").addEventListener("click", buguneGit);
 $("tlWrap").addEventListener("wheel", function(e){
   if(!e.ctrlKey) return;
-  e.preventDefault(); zoomAyarla(state.ppd + (e.deltaY < 0 ? 2 : -2));
+  e.preventDefault(); zoomAyarla(ppdEtkin() * (e.deltaY < 0 ? 1.12 : 1/1.12));
 }, { passive:false });
 
 $("btnSaveHtml").addEventListener("click", saveHtmlFile);
@@ -4563,6 +4817,10 @@ document.addEventListener("keydown", function(e){
     return;
   }
   if(e.key === "Insert" && !yaziAlani(e.target) && !pencereAcik()){ e.preventDefault(); yeniFaaliyet(); return; }
+  if(!mod && !e.altKey && !e.shiftKey && (e.key === "ArrowLeft" || e.key === "ArrowRight") && state.tab === "cizelge" &&
+     state.view === "week" && !yaziAlani(e.target) && !pencereAcik() && !tasima && !surukleme.aktif){
+    e.preventDefault(); haftaKaydir(e.key === "ArrowLeft" ? -1 : 1); return;
+  }
   if(e.altKey && !mod && /^[1-5]$/.test(e.key)){ e.preventDefault(); sekmeyeGec(SEKMELER[+e.key - 1]); return; }
   if(e.key === "Delete" && !yaziAlani(e.target) && !pencereAcik() && state.tab === "liste" && seciliIdler().length){ e.preventDefault(); topluSil(seciliIdler()); }
 });

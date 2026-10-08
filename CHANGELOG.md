@@ -1,5 +1,23 @@
 # Değişiklik Günlüğü
 
+## v1.3.0 — 2026-10-08
+
+- **Haftalık görünüm:**
+  - Çizelgede pazartesi–pazar tek hafta gösterilir; ölçek 7 günü ekrana sığdırır.
+  - Hafta geçişi ‹ › düğmeleri, ← → tuşları, "Bu hafta" ve "Tarihe git…" ile yapılır.
+  - Gün başlıklarında gün adı ve tarih, geniş çubuklarda tarih aralığı ve süre görünür; bugünün sütunu vurgulanır.
+- **Daha geniş ölçek:** Gün genişliği 240 piksele kadar çıkabilir. Kaydırıcı logaritmiktir; `Ctrl` + tekerlek ile yakınlaştırılır.
+- **Bağlı faaliyetleri gün farkını koruyarak kaydırma:**
+  - Bir faaliyetin tarihi değişince (sürükleme, form, toplu kaydırma) "x iş günü kaydırdınız, bağlı faaliyetler de güncellensin mi?" diye sorulur.
+  - Varsayılan seçimde ardıllar aynı miktarda kayar ve aradaki gün farkı korunur.
+  - İstenirse öncüller de kaydırılır.
+  - Eski davranış ("yalnızca gerekenleri ileri it") seçenek olarak duruyor.
+  - Tamamlanmış ve kapatılmış faaliyetler taşınmaz.
+- **Akış şeması:**
+  - "Öncül okları" kutusuyla oklar açılıp kapanır.
+  - Oklar kutuların ve gri aşama çizgilerinin üzerinden geçmez; kutular arasında oklara ayrı koridor bırakılır.
+- **İş kırılımı:** Haftalık, çeyrek ve tarih aralığı görünümlerinde yalnızca o pencerede görünen faaliyetler ve grupları listelenir.
+
 ## v1.2.0 — 2026-10-03
 
 **Ekran düzeni**

@@ -13,8 +13,8 @@ Dosya içindeki ana bölümler (`/* ===== ... ===== */` başlıklarıyla ayrılm
 | faaliyet modeli | Grup hesabı (`gruplariGuncelle`), iş kırılımı sırası (`wbsSirasi`) |
 | kalıcı kayıt | v3 biçimi, tarayıcı deposu, HTML'e gömülü veri, dosyaya otomatik yazma |
 | geri al / yinele | Her çizimde faaliyet + proje özeti; değiştiyse önceki hal yığına (100 adım) |
-| dik açılı ok rotalama | Kutuları engel sayan seyrek ızgara üzerinde, dönüş cezalı en kısa yol (Dijkstra + öncelik kuyruğu) |
-| öncül / ardıl, kritik yol | En erken başlangıç, topolojik sıra, zincirleme plan, geriye doğru geç başlangıç/bitiş hesabı ve bolluk |
+| dik açılı ok rotalama | Kutuları engel sayan seyrek ızgara üzerinde, dönüş cezalı en kısa yol (Dijkstra + öncelik kuyruğu). "Sert" hatlar (akış şemasındaki aşama çizgileri) boyunca gidilemez, dik kesmek cezalıdır |
+| öncül / ardıl, kritik yol | En erken başlangıç, topolojik sıra, zincirleme plan (`planla`: ileri itme; `koruPlani`: gün farkını koruyarak kaydırma), geriye doğru geç başlangıç/bitiş hesabı ve bolluk |
 | süzme / çakışma / çizelge modeli | Süzgeçler, çakışma ölçütleri, `cizelgeModel` (satır ve şeritler; ekran ve PNG ortak) |
 | çizim | Çizelge (DOM), çubuk taşıma / süre değiştirme, sürükleyerek bağ, liste, yük, rapor, akış şeması (SVG) |
 | ayrıntı / form / ayarlar | Ayrıntı penceresi, sağ çekmece formu, zincir onayı, temel plan, proje ayarları |

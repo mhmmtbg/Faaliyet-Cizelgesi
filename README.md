@@ -8,10 +8,11 @@ Kapalı ağdaki, yönetici yetkisi olmayan bilgisayarlarda çalışmak üzere ta
 
 ## Öne çıkanlar
 
+- **Haftalık görünüm:** Çizelgede hafta hafta ilerleme; 7 gün ekrana sığar, gün adları ve tarihler okunaklı.
 - **Ekrana sığan düzen:** Çizelge, Liste, Akış şeması, Yük ve Rapor ayrı sekmelerde. Faaliyet formu sağdan açılan bir çekmecede.
 - **Zaman çizelgesi:** Satırlar sorumluya, projeye, kaynağa ya da iş kırılımına (gruplar) göre. Çubuğu sürükleyerek taşıma, sağ kenarından süre değiştirme, ○ tutamaktan bağ kurma.
 - **Çalışma takvimi:** Hafta sonları ve Türkiye resmi tatilleri atlanır; özel tatil ve kapalı günler eklenebilir. Kesintisiz işler için "takvim günü" seçeneği.
-- **Öncül / ardıl bağları:** Gecikmeli bağ, döngü engeli, zincirleme tarih güncelleme (ileri itme / öne çekme), ihlal işaretleme. Oklar kutuların etrafından dolaşır.
+- **Öncül / ardıl bağları:** Gecikmeli bağ, döngü engeli, ihlal işaretleme. Bir faaliyet kaydırılınca bağlı faaliyetler aradaki gün farkı korunarak (onayla) kaydırılır. Oklar kutuların ve aşama çizgilerinin etrafından dolaşır.
 - **Kritik yol ve bolluk**, **kilometre taşları**, **gruplar (iş kırılımı)**, **ilerleme yüzdesi**, gerçekleşen tarihler, **temel plan ve sapma**.
 - **Kaynak / tesis** alanı ile test tezgâhı, oda, cihaz gibi paylaşılan kaynakların çakışma kontrolü.
 - **Yük:** Kişi başı haftalık saat yükü (kapasite aşımı renkli) ve kaynak doluluğu; kişi × proje adam*saat özeti.
@@ -44,7 +45,11 @@ Ayrıntılı kullanım için: **[docs/KULLANIM.md](docs/KULLANIM.md)**
 
 ## Ekran görüntüleri
 
-| Çubuğu sürükleyerek taşıma | Zincirleme tarih güncelleme |
+| Haftalık görünüm |
+|---|
+| ![Haftalık](docs/images/ekran-hafta.png) |
+
+| Çubuğu sürükleyerek taşıma | Bağlı faaliyetleri kaydırma |
 |---|---|
 | ![Sürükle](docs/images/ekran-surukle.png) | ![Zincir](docs/images/ekran-zincir.png) |
 
